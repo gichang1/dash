@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025 바이오푸드테크팀 사업 현황</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: linear-gradient(135deg, #0A0020 0%, #1A0B3D 30%, #2D1B5A 60%, #1F0A4D 100%);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 15% 25%, rgba(78, 205, 196, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 85% 15%, rgba(255, 107, 157, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 45% 85%, rgba(155, 89, 182, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .dashboard {
+            height: 100vh;
+            width: 100vw;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .header h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #4ECDC4 0%, #FF6B9D 50%, #9B59B6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(78, 205, 196, 0.6));
+            margin-bottom: 0.3rem;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #E8E8E8;
+            font-weight: 400;
+            opacity: 0.9;
+            display: none;
+        }
+
+        .refresh-indicator {
+            display: none;
+        }
+        
+        .metrics-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            height: 140px;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, rgba(47, 27, 77, 0.7) 0%, rgba(42, 27, 61, 0.9) 100%);
+            border: 1px solid rgba(78, 205, 196, 0.4);
+            border-radius: 12px;
+            padding: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 15px rgba(78, 205, 196, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(78, 205, 196, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .metric-card:hover::before {
+            left: 100%;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 8px 25px rgba(78, 205, 196, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 107, 157, 0.6);
+        }
+        
+        .metric-title {
+            font-size: 1.08rem;
+            color: #B8B8D1;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .metric-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.43rem;
+            font-weight: 700;
+            color: #4ECDC4;
+            margin-bottom: 0.2rem;
+            filter: drop-shadow(0 0 8px rgba(78, 205, 196, 0.8));
+            line-height: 1;
+        }
+        
+        .metric-unit {
+            font-size: 0.945rem;
+            color: #D1D1E0;
+            font-weight: 400;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 1.2rem;
+            flex: 1;
+            height: calc(100vh - 300px);
+        }
+        
+        .chart-card {
+            background: linear-gradient(135deg, rgba(47, 27, 77, 0.6) 0%, rgba(42, 27, 61, 0.8) 100%);
+            border: 1px solid rgba(255, 107, 157, 0.3);
+            border-radius: 16px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 6px 20px rgba(255, 107, 157, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .chart-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, rgba(255, 107, 157, 0.8), transparent);
+        }
+        
+        .chart-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            color: #E8E8E8;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.1;
+        }
+        
+        .chart-container {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+        }
+        
+        .detail-card {
+            background: linear-gradient(135deg, rgba(47, 27, 77, 0.6) 0%, rgba(42, 27, 61, 0.8) 100%);
+            border: 1px solid rgba(155, 89, 182, 0.4);
+            border-radius: 16px;
+            padding: 1.2rem;
+            backdrop-filter: blur(15px);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 
+                0 6px 20px rgba(155, 89, 182, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4ECDC4, #FF6B9D, #9B59B6);
+        }
+        
+        .detail-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            color: #E8E8E8;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            line-height: 1.1;
+        }
+        
+        .item-list {
+            list-style: none;
+            height: calc(100% - 2.2rem);
+            overflow-y: auto;
+        }
+        
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1rem;
+            line-height: 1.2;
+        }
+        
+        .status-item {
+            font-size: 0.75rem;
+            padding: 0.25rem 0;
+            line-height: 1.1;
+        }
+        
+        .item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-name {
+            font-weight: 500;
+            color: #D1D1E0;
+            max-width: 65%;
+            line-height: 1.1;
+        }
+        
+        .item-value {
+            color: #4ECDC4;
+            font-weight: 600;
+            text-align: right;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+            filter: drop-shadow(0 0 4px rgba(78, 205, 196, 0.6));
+            line-height: 1.1;
+        }
+        
+        .status-item .item-value {
+            font-size: 0.65rem;
+        }
+        
+        .field-badge {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            margin-top: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-right: 0.3rem;
+        }
+        
+        .foodtech {
+            background: linear-gradient(135deg, rgba(255, 107, 157, 0.3), rgba(255, 107, 157, 0.2));
+            color: #FFB8D6;
+            border: 1px solid rgba(255, 107, 157, 0.5);
+            box-shadow: 0 0 8px rgba(255, 107, 157, 0.3);
+        }
+        
+        .greenbio {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.3), rgba(78, 205, 196, 0.2));
+            color: #B8F2EC;
+            border: 1px solid rgba(78, 205, 196, 0.5);
+            box-shadow: 0 0 8px rgba(78, 205, 196, 0.3);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(78, 205, 196, 0.1);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #4ECDC4, #FF6B9D);
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(78, 205, 196, 0.4);
+        }
+        
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 8px rgba(78, 205, 196, 0.6)); }
+            50% { filter: drop-shadow(0 0 16px rgba(78, 205, 196, 1)); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 
+                    0 4px 15px rgba(78, 205, 196, 0.2),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            50% { 
+                box-shadow: 
+                    0 8px 30px rgba(78, 205, 196, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            }
+        }
+        
+        .glow-effect {
+            animation: glow 2.5s ease-in-out infinite;
+        }
+        
+        .pulse-effect {
+            animation: pulse 3s ease-in-out infinite;
+        }
+        
+        .grid-lines {
+            background-image: 
+                linear-gradient(rgba(78, 205, 196, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(78, 205, 196, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        
+        @media screen and (min-width: 1920px) {
+            .header h1 { font-size: 2.8rem; }
+            .metric-title { font-size: 1.26rem; }
+            .metric-value { font-size: 2.88rem; }
+            .metric-unit { font-size: 1.08rem; }
+            .chart-title { font-size: 1.6rem; }
+            .detail-title { font-size: 1.6rem; }
+            .item { font-size: 1.1rem; }
+            .item-value { font-size: 1.2rem; }
+            .status-item { font-size: 0.85rem; }
+            .status-item .item-value { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body class="grid-lines">
+    <div class="refresh-indicator" id="refreshIndicator">다음 새로고침: 10초</div>
+    <div class="dashboard">
+        <header class="header">
+            <h1 class="glow-effect">2025 바이오푸드테크팀 사업 현황</h1>
+            <div class="subtitle">통합 모니터링 시스템</div>
+        </header>
+        
+        <div class="metrics-section">
+            <div class="metric-card pulse-effect">
+                <div class="metric-title">총 연구비</div>
+                <div class="metric-value" data-target="398.8">398.8</div>
+                <div class="metric-unit">억원</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">총 과제수</div>
+                <div class="metric-value" data-target="223">223</div>
+                <div class="metric-unit">개 과제</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">세부사업</div>
+                <div class="metric-value" data-target="6">6</div>
+                <div class="metric-unit">개 사업</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">내역사업</div>
+                <div class="metric-value" data-target="16">16</div>
+                <div class="metric-unit">개 사업</div>
+            </div>
+        </div>
+        
+        <div class="content-grid">
+            <div class="chart-card">
+                <div class="chart-title">💰 분야별 예산 분포</div>
+                <div class="chart-container">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">📊 세부사업별 예산 비교</div>
+                <div class="chart-container">
+                    <canvas id="projectBudgetChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">🔬 분야별 과제수 분포</div>
+                <div class="chart-container">
+                    <canvas id="fieldChart"></canvas>
+                </div>
+            </div>
+            <div class="detail-card">
+                <div class="detail-title">🍎 Foodtech 분야</div>
+                <ul class="item-list">
+                    <li class="item">
+                        <div class="item-name">
+                            K-농식품자원기능성성분활용기반고도화
+                            <div class="field-badge foodtech">푸드팀</div>
+                        </div>
+                        <div class="item-value">19개<br>64.3억</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-name">
+                            농산부산물Eco순환기술개발
+                            <div class="field-badge foodtech">푸드팀</div>
+                        </div>
+                        <div class="item-value">6개<br>50억</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-name">과제수 총계</div>
+                        <div class="item-value">25개</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-name">예산 총계</div>
+                        <div class="item-value">114.3억</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="detail-card">
+                <div class="detail-title">🌱 Greenbio 분야</div>
+                <ul class="item-list">
+                    <li class="item">
+                        <div class="item-name">
+                            농업정책지원기술개발사업
+                            <div class="field-badge greenbio">생명팀</div>
+                            <div class="field-badge foodtech">푸드팀</div>
+                        </div>
+                        <div class="item-value">135개<br>104.2억</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-name">
+                            차세대농작물신육종기술개발
+                            <div class="field-badge greenbio">생명팀</div>
+                        </div>
+                        <div class="item-value">34개<br>70.1억</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-name">
+                            공공성확보위한국가기반육종플랫폼개발
+                            <div class="field-badge greenbio">생명팀</div>
+                        </div>
+                        <div class="item-value">22개<br>69.8억</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-name">
+                            농생명마이크로바이옴혁신기술기반구축
+                            <div class="field-badge foodtech">푸드팀</div>
+                        </div>
+                        <div class="item-value">7개<br>40억</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-name">과제수 총계</div>
+                        <div class="item-value">198개</div>
+                    </li>
+                    <li class="item">
+                        <div class="item-name">예산 총계</div>
+                        <div class="item-value">284.1억</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="detail-card">
+                <div class="detail-title">📈 세부사업 종료 현황</div>
+                <ul class="item-list">
+                    <li class="item status-item">
+                        <div class="item-value">2025년</div>
+                        <div class="item-name">(농업정책지원_내역)곤충기술경쟁력</div>
+                    </li>
+                    <li class="item status-item">
+                        <div class="item-value">2025년</div>
+                        <div class="item-name">(농업정책지원_내역)생분해성플라스틱품질향상과실증연구</div>
+                    </li>
+                    <li class="item status-item">
+                        <div class="item-value">2025년</div>
+                        <div class="item-name">(농업정책지원_내역)LMO환경위해성평가기관운영</div>
+                    </li>
+                    <li class="item status-item">
+                        <div class="item-value">2026년</div>
+                        <div class="item-name">K-농식품자원기능성성분활용기반고도화</div>
+                    </li>
+                    <li class="item status-item">
+                        <div class="item-value">2026년</div>
+                        <div class="item-name">차세대농작물신육종기술개발</div>
+                    </li>
+                    <li class="item status-item">
+                        <div class="item-value">2027년</div>
+                        <div class="item-name">(농업정책지원_내역)꿀벌강건성연구</div>
+                    </li>
+                    <li class="item status-item">
+                        <div class="item-value">2027년</div>
+                        <div class="item-name">공공성확보를위한국가기반육종플랫폼개발</div>
+                    </li>
+                    <li class="item status-item">
+                        <div class="item-value">2028년</div>
+                        <div class="item-name">농생명마이크로바이옴혁신기술기반구축</div>
+                    </li>
+                    <li class="item status-item">
+                        <div class="item-value">2029년</div>
+                        <div class="item-name">농산부산물Eco순환기술개발</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        Chart.register(ChartDataLabels);
+        
+        Chart.defaults.color = '#E8E8E8';
+        Chart.defaults.font.family = 'Noto Sans KR';
+        Chart.defaults.font.size = 16;
+        Chart.defaults.plugins.legend.labels.usePointStyle = true;
+        
+        const designColors = {
+            primary: '#4ECDC4',
+            secondary: '#FF6B9D',
+            accent: '#9B59B6',
+            orange: '#FF7F50',
+            yellow: '#F39C12',
+            white: '#E8E8E8',
+            gradient1: 'rgba(78, 205, 196, 0.8)',
+            gradient2: 'rgba(255, 107, 157, 0.8)',
+            gradient3: 'rgba(155, 89, 182, 0.8)',
+            gradient4: 'rgba(255, 127, 80, 0.8)',
+            gradient5: 'rgba(243, 156, 18, 0.8)',
+            gradient6: 'rgba(46, 204, 113, 0.8)'
+        };
+        
+        const animationConfig = {
+            duration: 2500,
+            easing: 'easeInOutCubic',
+            delay: (context) => context.dataIndex * 300
+        };
+
+        let refreshCountdown = 10;
+        let countdownInterval;
+        
+        function updateRefreshIndicator() {
+            const indicator = document.getElementById('refreshIndicator');
+            indicator.textContent = `다음 새로고침: ${refreshCountdown}초`;
+            refreshCountdown--;
+            
+            if (refreshCountdown < 0) {
+                indicator.textContent = '새로고침 중...';
+                clearInterval(countdownInterval);
+                location.reload();
+            }
+        }
+
+        function startRefreshCountdown() {
+            refreshCountdown = 10;
+            countdownInterval = setInterval(updateRefreshIndicator, 1000);
+        }
+        
+        const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+        new Chart(budgetCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Greenbio', 'Foodtech'],
+                datasets: [{
+                    data: [284.1, 114.3],
+                    backgroundColor: [designColors.gradient1, designColors.gradient2],
+                    borderColor: [designColors.primary, designColors.secondary],
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: animationConfig,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        display: true,
+                        color: '#FFFFFF',
+                        font: {
+                            size: 18,
+                            weight: 'bold'
+                        },
+                        formatter: function(value) {
+                            return value + '억원';
+                        },
+                        anchor: 'center',
+                        align: 'center'
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(47, 27, 77, 0.95)',
+                        titleColor: designColors.primary,
+                        bodyColor: designColors.white,
+                        borderColor: designColors.primary,
+                        borderWidth: 2,
+                        titleFont: { size: 18, weight: 'bold' },
+                        bodyFont: { size: 16, weight: 'bold' },
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + '억원';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { 
+                            color: 'rgba(78, 205, 196, 0.2)',
+                            lineWidth: 1
+                        },
+                        ticks: { 
+                            color: designColors.white, 
+                            font: { size: 16, weight: 'bold' },
+                            callback: function(value) {
+                                return value + '억';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { 
+                            color: designColors.white, 
+                            font: { size: 17, weight: 'bold' }
+                        }
+                    }
+                }
+            }
+        });
+        
+        const fieldCtx = document.getElementById('fieldChart').getContext('2d');
+        new Chart(fieldCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Greenbio (198과제)', 'Foodtech (25과제)'],
+                datasets: [{
+                    data: [198, 25],
+                    backgroundColor: [designColors.gradient1, designColors.gradient2],
+                    borderColor: [designColors.primary, designColors.secondary],
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    ...animationConfig,
+                    animateRotate: true,
+                    animateScale: true
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            color: designColors.white,
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    },
+                    datalabels: {
+                        display: true,
+                        color: '#FFFFFF',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        },
+                        formatter: function(value, context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = Math.round((value / total) * 100);
+                            return percentage + '%';
+                        },
+                        anchor: 'center',
+                        align: 'center'
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(47, 27, 77, 0.95)',
+                        titleColor: designColors.primary,
+                        bodyColor: designColors.white,
+                        borderColor: designColors.primary,
+                        borderWidth: 2,
+                        titleFont: { size: 18, weight: 'bold' },
+                        bodyFont: { size: 16, weight: 'bold' },
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((context.parsed / total) * 100);
+                                return context.label + ': ' + percentage + '%';
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+        
+        const projectBudgetCtx = document.getElementById('projectBudgetChart').getContext('2d');
+        new Chart(projectBudgetCtx, {
+            type: 'bar',
+            data: {
+                labels: ['농업정책지원', '차세대농작물신육종', '공공성확보육종', 'K-농식품자원', '농산부산물Eco', '농생명마이크로바이옴'],
+                datasets: [{
+                    data: [104.2, 70.1, 69.8, 64.3, 50, 40],
+                    backgroundColor: [
+                        designColors.gradient1,
+                        designColors.gradient6,
+                        designColors.gradient2,
+                        designColors.gradient3,
+                        designColors.gradient4,
+                        designColors.gradient5
+                    ],
+                    borderColor: [
+                        designColors.primary,
+                        '#2ECC71',
+                        designColors.secondary,
+                        designColors.accent,
+                        designColors.orange,
+                        designColors.yellow
+                    ],
+                    borderWidth: 2,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: animationConfig,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        display: true,
+                        color: '#FFFFFF',
+                        font: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        formatter: function(value) {
+                            return value + '억';
+                        },
+                        anchor: 'center',
+                        align: 'center'
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(47, 27, 77, 0.95)',
+                        titleColor: designColors.primary,
+                        bodyColor: designColors.white,
+                        borderColor: designColors.primary,
+                        borderWidth: 2,
+                        titleFont: { size: 16, weight: 'bold' },
+                        bodyFont: { size: 14, weight: 'bold' },
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.x + '억원';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { 
+                            color: 'rgba(255, 107, 157, 0.2)',
+                            lineWidth: 1
+                        },
+                        ticks: { 
+                            color: designColors.white, 
+                            font: { size: 14, weight: 'bold' },
+                            callback: function(value) {
+                                return value + '억';
+                            }
+                        }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { 
+                            color: designColors.white, 
+                            font: { size: 12, weight: 'bold' }
+                        }
+                    }
+                }
+            }
+        });
+        
+        function animateCounters() {
+            const counters = document.querySelectorAll('.metric-value');
+            counters.forEach((counter, index) => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                let current = 0;
+                const increment = target / 100;
+                
+                setTimeout(() => {
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            current = target;
+                            clearInterval(timer);
+                        }
+                        // 소수점이 있는 값은 항상 소수점 표시
+                        if (target % 1 !== 0) {
+                            counter.textContent = current.toFixed(1);
+                        } else {
+                            counter.textContent = Math.floor(current);
+                        }
+                    }, 20);
+                }, index * 400);
+            });
+        }
+        
+        document.querySelectorAll('.metric-card, .chart-card, .detail-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // 20초마다 자동 새로고침
+        setInterval(() => {
+            location.reload();
+        }, 20000);
+        
+        window.addEventListener('load', () => {
+            setTimeout(animateCounters, 1200);
+        });
+        
+        setInterval(() => {
+            const cards = document.querySelectorAll('.metric-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.boxShadow = '0 8px 30px rgba(78, 205, 196, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+                    setTimeout(() => {
+                        card.style.boxShadow = '0 4px 15px rgba(78, 205, 196, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)';
+                    }, 500);
+                }, index * 300);
+            });
+        }, 8000);
+        
+        setInterval(() => {
+            Chart.getChart('budgetChart').update('active');
+            Chart.getChart('fieldChart').update('active');
+            Chart.getChart('projectBudgetChart').update('active');
+        }, 12000);
+        
+        // TV 리모컨 대응 (webOS용)
+        document.addEventListener('keydown', function(event) {
+            switch(event.keyCode) {
+                case 13: // OK 버튼
+                    location.reload();
+                    break;
+                case 412: // Red 버튼
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen();
+                    } else {
+                        document.exitFullscreen();
+                    }
+                    break;
+                case 413: // Green 버튼
+                    // 데이터 새로고침
+                    Chart.helpers.each(Chart.instances, function(instance) {
+                        instance.update('active');
+                    });
+                    animateCounters();
+                    break;
+                case 461: // Back 버튼
+                    if (window.webOS) {
+                        webOS.platformBack();
+                    }
+                    break;
+            }
+        });
+        
+        console.log('🚀 바이오푸드테크팀 대시보드 로드 완료 - 5초 자동 새로고침 적용');
+    </script>
+</body>
+</html>
