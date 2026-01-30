@@ -1,0 +1,7 @@
+# HWP to PDF Converter Dependencies
+
+# Windows COM interface for Hancom Office
+pywin32>=306
+
+# EXE packaging
+pyinstaller>=6.0
