@@ -25,6 +25,34 @@
   .screen { display: none; min-height: 100vh; padding: 20px; }
   .screen.active { display: flex; flex-direction: column; align-items: center; }
 
+  /* ===== BGM BUTTON ===== */
+  #bgm-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: rgba(255,215,0,0.15);
+    border: 2px solid rgba(255,215,0,0.5);
+    color: var(--accent);
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.15s;
+    backdrop-filter: blur(6px);
+  }
+  #bgm-btn:hover { background: rgba(255,215,0,0.28); transform: scale(1.1); }
+  #bgm-btn.playing { border-color: var(--accent); background: rgba(255,215,0,0.25); }
+  @keyframes spin-note {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  #bgm-btn.playing .note-icon { display: inline-block; animation: spin-note 3s linear infinite; }
+
   /* ===== HOME ===== */
   #home {
     justify-content: center;
@@ -472,6 +500,11 @@
   </div>
 </div>
 
+<!-- BGM Toggle Button -->
+<button id="bgm-btn" onclick="toggleBGM()" title="배경음악 켜기/끄기">
+  <span class="note-icon">🎵</span>
+</button>
+
 <script>
 // ===== DATA =====
 const CHARACTERS = [
@@ -562,7 +595,6 @@ function showDetail(char, from) {
 
 // ===== SEARCH =====
 function renderSearch() {
-  // chips
   const chipWrap = document.getElementById('cat-chips');
   chipWrap.innerHTML = CATEGORIES.map(c =>
     `<div class="chip ${c === selectedCat ? 'active' : ''}" onclick="selectCat('${c}')">${c}</div>`
@@ -691,10 +723,12 @@ function selectAnswer(chosen, btn) {
     correct++;
     unlockedSet.add(q.char.nameKorean);
     saveUnlocked();
+    playCorrectSound();
   } else {
     btn.classList.add('wrong');
     btn.classList.add('shake');
     allBtns.forEach(b => { if (b.textContent === q.correct) b.classList.add('reveal'); });
+    playWrongSound();
   }
   setTimeout(() => { currentQIdx++; renderQuestion(); }, 1400);
 }
@@ -752,6 +786,300 @@ function saveUnlocked() {
 
 // ===== INIT chips =====
 renderSearch();
+
+
+// ============================================================
+//  BGM  - Web Audio API 기반 그리스 신화 분위기 음악
+//  A 도리안 스케일 (A, B, C, D, E, F#, G)
+//  계층: 드론 베이스 + 리라 아르페지오 + 패드 화음 + 멜로디
+// ============================================================
+let audioCtx = null;
+let bgmPlaying = false;
+let bgmNodes = [];      // 정지 시 disconnect 용
+let bgmScheduler = null;
+
+// 음표 주파수 (A 도리안 스케일, 2옥타브)
+const SCALE = {
+  A2: 110.00, B2: 123.47, C3: 130.81, D3: 146.83, E3: 164.81, Fs3: 185.00, G3: 196.00,
+  A3: 220.00, B3: 246.94, C4: 261.63, D4: 293.66, E4: 329.63, Fs4: 369.99, G4: 392.00,
+  A4: 440.00, B4: 493.88, C5: 523.25, D5: 587.33, E5: 659.26
+};
+
+function getCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+// 마스터 게인 (볼륨 조절 지점)
+let masterGain = null;
+
+function initMaster() {
+  const ctx = getCtx();
+  masterGain = ctx.createGain();
+  masterGain.gain.setValueAtTime(0, ctx.currentTime);
+  masterGain.connect(ctx.destination);
+}
+
+// ── 리버브 (컨볼루션) ──────────────────────────────────────
+function createReverb(ctx, duration = 2.5, decay = 2.0) {
+  const rate = ctx.sampleRate;
+  const len  = rate * duration;
+  const ir   = ctx.createBuffer(2, len, rate);
+  for (let ch = 0; ch < 2; ch++) {
+    const data = ir.getChannelData(ch);
+    for (let i = 0; i < len; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+    }
+  }
+  const conv = ctx.createConvolver();
+  conv.buffer = ir;
+  return conv;
+}
+
+// ── 리라 (하프) 발현음 ─────────────────────────────────────
+function pluckNote(ctx, dest, freq, startTime, duration = 1.2, vol = 0.18) {
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, startTime);
+
+  // 고음 하모닉 블렌드
+  const osc2  = ctx.createOscillator();
+  const gain2 = ctx.createGain();
+  osc2.type = 'sine';
+  osc2.frequency.setValueAtTime(freq * 2, startTime);
+  gain2.gain.setValueAtTime(vol * 0.3, startTime);
+  gain2.gain.exponentialRampToValueAtTime(0.0001, startTime + duration * 0.6);
+  osc2.connect(gain2); gain2.connect(dest);
+  osc2.start(startTime); osc2.stop(startTime + duration);
+
+  gain.gain.setValueAtTime(vol, startTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+  osc.connect(gain); gain.connect(dest);
+  osc.start(startTime); osc.stop(startTime + duration + 0.05);
+  bgmNodes.push(osc, osc2);
+}
+
+// ── 패드 (지속음) ──────────────────────────────────────────
+function padNote(ctx, dest, freq, startTime, dur, vol = 0.06) {
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(freq, startTime);
+
+  // 부드러운 필터
+  const filt = ctx.createBiquadFilter();
+  filt.type = 'lowpass';
+  filt.frequency.setValueAtTime(600, startTime);
+  filt.Q.value = 0.8;
+
+  const attack = 0.6, release = 1.0;
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(vol, startTime + attack);
+  gain.gain.setValueAtTime(vol, startTime + dur - release);
+  gain.gain.linearRampToValueAtTime(0, startTime + dur);
+
+  osc.connect(filt); filt.connect(gain); gain.connect(dest);
+  osc.start(startTime); osc.stop(startTime + dur + 0.1);
+  bgmNodes.push(osc);
+}
+
+// ── 드론 베이스 ────────────────────────────────────────────
+function droneNote(ctx, dest, freq, startTime, dur, vol = 0.07) {
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, startTime);
+  gain.gain.setValueAtTime(vol, startTime);
+  gain.gain.setValueAtTime(vol, startTime + dur - 0.5);
+  gain.gain.linearRampToValueAtTime(0, startTime + dur);
+  osc.connect(gain); gain.connect(dest);
+  osc.start(startTime); osc.stop(startTime + dur + 0.05);
+  bgmNodes.push(osc);
+}
+
+// ── 멜로디 ─────────────────────────────────────────────────
+function melodyNote(ctx, dest, freq, startTime, dur, vol = 0.12) {
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(freq, startTime);
+  const atk = 0.04;
+  gain.gain.setValueAtTime(0, startTime);
+  gain.gain.linearRampToValueAtTime(vol, startTime + atk);
+  gain.gain.exponentialRampToValueAtTime(0.0001, startTime + dur);
+  osc.connect(gain); gain.connect(dest);
+  osc.start(startTime); osc.stop(startTime + dur + 0.05);
+  bgmNodes.push(osc);
+}
+
+// ── 한 사이클(8박, ~8초) 스케줄 ───────────────────────────
+// BPM 60 → 1박 = 1.0초
+const BPM = 58;
+const BEAT = 60 / BPM;   // ~1.034 s
+
+function scheduleCycle(ctx, dest, startTime) {
+  const b = BEAT;
+
+  // 아르페지오 패턴 (리라 스타일)
+  // Am → G → F → Em → Am (2박씩)
+  const arpeggios = [
+    // Am  (A C E)
+    [SCALE.A3, SCALE.C4, SCALE.E4, SCALE.A4],
+    // G   (G B D)
+    [SCALE.G3, SCALE.B3, SCALE.D4, SCALE.G4],
+    // Dm  (D F A)  ← F 도리안에선 F#이지만 Dm 느낌
+    [SCALE.D4, SCALE.Fs4, SCALE.A4, SCALE.D5],
+    // Em  (E G B)
+    [SCALE.E3, SCALE.G3, SCALE.B3, SCALE.E4],
+    // Am 반복
+    [SCALE.A3, SCALE.E4, SCALE.A4, SCALE.C5],
+    // G
+    [SCALE.G3, SCALE.D4, SCALE.G4, SCALE.B4],
+    // Am 확장
+    [SCALE.A2, SCALE.E3, SCALE.A3, SCALE.C4],
+    // Em 클로즈
+    [SCALE.E3, SCALE.B3, SCALE.E4, SCALE.B4],
+  ];
+
+  for (let chord = 0; chord < 8; chord++) {
+    const chordStart = startTime + chord * 2 * b;
+    const notes = arpeggios[chord];
+    // 각 코드당 4음, 0.5박 간격
+    notes.forEach((freq, i) => {
+      pluckNote(ctx, dest, freq, chordStart + i * 0.5 * b, 1.8 * b, 0.15);
+    });
+
+    // 패드 화음 (2박짜리)
+    const padRoot = notes[0] * 0.5;
+    padNote(ctx, dest, padRoot,   chordStart, 2.2 * b, 0.055);
+    padNote(ctx, dest, notes[1],  chordStart, 2.2 * b, 0.04);
+    padNote(ctx, dest, notes[2],  chordStart, 2.2 * b, 0.035);
+
+    // 드론 베이스 (A 지속)
+    droneNote(ctx, dest, SCALE.A2, chordStart, 2.2 * b, 0.06);
+  }
+
+  // 멜로디 라인 (16박 걸쳐 한 번)
+  const melSeq = [
+    { f: SCALE.E4,  t: 0,    d: 1.5 * b },
+    { f: SCALE.D4,  t: 1.5,  d: 0.5 * b },
+    { f: SCALE.E4,  t: 2,    d: 1.0 * b },
+    { f: SCALE.A4,  t: 3,    d: 2.0 * b },
+    { f: SCALE.G4,  t: 5,    d: 1.0 * b },
+    { f: SCALE.Fs4, t: 6,    d: 0.5 * b },
+    { f: SCALE.E4,  t: 6.5,  d: 1.5 * b },
+    { f: SCALE.D4,  t: 8,    d: 1.0 * b },
+    { f: SCALE.C4,  t: 9,    d: 0.5 * b },
+    { f: SCALE.D4,  t: 9.5,  d: 1.0 * b },
+    { f: SCALE.E4,  t: 10.5, d: 2.0 * b },
+    { f: SCALE.A3,  t: 12.5, d: 3.0 * b },
+  ];
+  melSeq.forEach(n => {
+    melodyNote(ctx, dest, n.f, startTime + n.t * b, n.d, 0.11);
+  });
+
+  return startTime + 16 * b;  // 다음 사이클 시작 시간
+}
+
+// ── BGM 루프 스케줄러 ──────────────────────────────────────
+let nextCycleTime = 0;
+let loopHandle = null;
+
+function schedulerTick() {
+  if (!bgmPlaying) return;
+  const ctx = getCtx();
+  const lookahead = 0.1;
+  if (nextCycleTime < ctx.currentTime + lookahead) {
+    nextCycleTime = scheduleCycle(ctx, masterGain, Math.max(nextCycleTime, ctx.currentTime + 0.05));
+  }
+  loopHandle = setTimeout(schedulerTick, 50);
+}
+
+// ── 공개 API ───────────────────────────────────────────────
+function startBGM() {
+  const ctx = getCtx();
+  if (ctx.state === 'suspended') ctx.resume();
+  if (!masterGain) initMaster();
+
+  bgmPlaying = true;
+  nextCycleTime = ctx.currentTime + 0.1;
+
+  // 페이드인
+  masterGain.gain.cancelScheduledValues(ctx.currentTime);
+  masterGain.gain.setValueAtTime(0, ctx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(1.0, ctx.currentTime + 2.0);
+
+  schedulerTick();
+  updateBGMButton(true);
+}
+
+function stopBGM() {
+  bgmPlaying = false;
+  if (loopHandle) clearTimeout(loopHandle);
+
+  const ctx = getCtx();
+  if (masterGain) {
+    masterGain.gain.cancelScheduledValues(ctx.currentTime);
+    masterGain.gain.setValueAtTime(masterGain.gain.value, ctx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.5);
+  }
+
+  // 기존 노드 예약 취소는 자연 만료에 맡김
+  bgmNodes = [];
+  updateBGMButton(false);
+}
+
+function toggleBGM() {
+  if (bgmPlaying) {
+    stopBGM();
+  } else {
+    startBGM();
+  }
+}
+
+function updateBGMButton(playing) {
+  const btn = document.getElementById('bgm-btn');
+  btn.className = playing ? 'playing' : '';
+  btn.innerHTML = playing
+    ? '<span class="note-icon">🎵</span>'
+    : '<span>🔇</span>';
+  btn.title = playing ? '배경음악 끄기' : '배경음악 켜기';
+}
+
+// ── 효과음 ─────────────────────────────────────────────────
+function playCorrectSound() {
+  try {
+    const ctx = getCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    const out = masterGain || ctx.destination;
+    // 상승 팡파레
+    [[SCALE.E4, 0], [SCALE.G4, 0.12], [SCALE.A4, 0.24], [SCALE.E5, 0.38]].forEach(([f, t]) => {
+      pluckNote(ctx, out, f, ctx.currentTime + t, 0.6, 0.2);
+    });
+  } catch(e) {}
+}
+
+function playWrongSound() {
+  try {
+    const ctx = getCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+    const out = masterGain || ctx.destination;
+    // 하강 불협화음
+    [[SCALE.C4, 0], [SCALE.B2, 0.1]].forEach(([f, t]) => {
+      pluckNote(ctx, out, f, ctx.currentTime + t, 0.5, 0.15);
+    });
+  } catch(e) {}
+}
+
+// 첫 클릭 시 BGM 자동 시작 (브라우저 정책 대응)
+let bgmAutoStarted = false;
+document.addEventListener('click', () => {
+  if (!bgmAutoStarted) {
+    bgmAutoStarted = true;
+    startBGM();
+  }
+}, { once: true });
 </script>
 </body>
 </html>
