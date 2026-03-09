@@ -12,7 +12,7 @@ object MythDataProvider {
             shortHint = "번개를 무기로 사용하는 신들의 왕",
             attributes = "번개, 독수리, 왕관, 올림포스",
             emoji = "⚡",
-            characterDrawable = "char_zeus",
+            characterDrawable = "01_zeus",
             difficulty = 1
         ),
         MythCharacter(
@@ -23,7 +23,7 @@ object MythDataProvider {
             shortHint = "결혼의 여신이자 제우스의 아내",
             attributes = "공작, 결혼, 질투, 왕비",
             emoji = "👑",
-            characterDrawable = "char_hera",
+            characterDrawable = "02_hera",
             difficulty = 1
         ),
         MythCharacter(
@@ -34,7 +34,7 @@ object MythDataProvider {
             shortHint = "삼지창을 들고 바다를 다스리는 신",
             attributes = "삼지창, 바다, 지진, 말",
             emoji = "🔱",
-            characterDrawable = "char_poseidon",
+            characterDrawable = "03_poseidon",
             difficulty = 1
         ),
         MythCharacter(
@@ -45,7 +45,7 @@ object MythDataProvider {
             shortHint = "지혜의 여신, 제우스의 머리에서 탄생",
             attributes = "올빼미, 올리브나무, 지혜, 투구",
             emoji = "🦉",
-            characterDrawable = "char_athena",
+            characterDrawable = "04_athena",
             difficulty = 1
         ),
         MythCharacter(
@@ -56,7 +56,7 @@ object MythDataProvider {
             shortHint = "태양과 음악의 신, 아르테미스의 쌍둥이",
             attributes = "태양, 활, 리라, 예언, 월계관",
             emoji = "☀️",
-            characterDrawable = "char_apollo",
+            characterDrawable = "05_apollo",
             difficulty = 1
         ),
         MythCharacter(
@@ -67,7 +67,7 @@ object MythDataProvider {
             shortHint = "달과 사냥의 여신, 아폴론의 쌍둥이",
             attributes = "달, 은활, 사냥, 사슴",
             emoji = "🌙",
-            characterDrawable = "char_artemis",
+            characterDrawable = "06_artemis",
             difficulty = 1
         ),
         MythCharacter(
@@ -78,7 +78,7 @@ object MythDataProvider {
             shortHint = "사랑과 미의 여신, 바다 거품에서 탄생",
             attributes = "장미, 비둘기, 사랑, 아름다움",
             emoji = "🌹",
-            characterDrawable = "char_aphrodite",
+            characterDrawable = "07_aphrodite",
             difficulty = 1
         ),
         MythCharacter(
@@ -89,7 +89,7 @@ object MythDataProvider {
             shortHint = "전쟁의 신, 폭력적인 전투를 즐김",
             attributes = "창, 방패, 전쟁, 피",
             emoji = "⚔️",
-            characterDrawable = "char_ares",
+            characterDrawable = "08_ares",
             difficulty = 2
         ),
         MythCharacter(
@@ -100,7 +100,7 @@ object MythDataProvider {
             shortHint = "불과 대장장이의 신, 신들의 무기를 제작",
             attributes = "불, 망치, 대장간, 갑옷",
             emoji = "🔨",
-            characterDrawable = "char_hephaestus",
+            characterDrawable = "09_hephaestus",
             difficulty = 2
         ),
         MythCharacter(
@@ -111,7 +111,7 @@ object MythDataProvider {
             shortHint = "날개 달린 샌들을 신은 신들의 전령",
             attributes = "날개 샌들, 지팡이, 전령, 도둑",
             emoji = "🪄",
-            characterDrawable = "char_hermes",
+            characterDrawable = "10_hermes",
             difficulty = 1
         ),
         MythCharacter(
@@ -122,7 +122,7 @@ object MythDataProvider {
             shortHint = "농업의 여신, 페르세포네의 어머니",
             attributes = "밀, 낫, 농업, 수확",
             emoji = "🌾",
-            characterDrawable = "char_demeter",
+            characterDrawable = "11_demeter",
             difficulty = 2
         ),
         MythCharacter(
@@ -133,7 +133,7 @@ object MythDataProvider {
             shortHint = "포도주와 축제의 신",
             attributes = "포도, 포도주, 티르소스, 축제",
             emoji = "🍇",
-            characterDrawable = "char_dionysus",
+            characterDrawable = "12_dionysus",
             difficulty = 2
         ),
 
@@ -146,7 +146,7 @@ object MythDataProvider {
             shortHint = "저승을 다스리는 죽음의 신",
             attributes = "저승, 죽음, 투명 투구, 케르베로스",
             emoji = "💀",
-            characterDrawable = "char_hades",
+            characterDrawable = "13_hades",
             difficulty = 1
         ),
         MythCharacter(
@@ -157,7 +157,7 @@ object MythDataProvider {
             shortHint = "저승의 여왕, 데메테르의 딸",
             attributes = "석류, 꽃, 저승, 봄",
             emoji = "🌺",
-            characterDrawable = "char_persephone",
+            characterDrawable = "14_persephone",
             difficulty = 2
         ),
         MythCharacter(
@@ -168,7 +168,7 @@ object MythDataProvider {
             shortHint = "사랑의 화살을 쏘는 날개 달린 신",
             attributes = "화살, 활, 날개, 사랑",
             emoji = "💘",
-            characterDrawable = "char_eros",
+            characterDrawable = "15_eros",
             difficulty = 2
         ),
         MythCharacter(
@@ -179,7 +179,7 @@ object MythDataProvider {
             shortHint = "승리의 여신, 날개를 가진 존재",
             attributes = "날개, 월계관, 승리, 트로피",
             emoji = "🏆",
-            characterDrawable = "char_nike",
+            characterDrawable = "16_nike",
             difficulty = 2
         ),
         MythCharacter(
@@ -190,7 +190,7 @@ object MythDataProvider {
             shortHint = "잠을 가져다주는 신",
             attributes = "잠, 양귀비, 날개, 밤",
             emoji = "😴",
-            characterDrawable = "char_hypnos",
+            characterDrawable = "17_hypnos",
             difficulty = 3
         ),
 
@@ -203,7 +203,7 @@ object MythDataProvider {
             shortHint = "12가지 과업을 완수한 최강의 영웅",
             attributes = "사자 가죽, 곤봉, 괴력, 12과업",
             emoji = "💪",
-            characterDrawable = "char_heracles",
+            characterDrawable = "18_heracles",
             difficulty = 1
         ),
         MythCharacter(
@@ -214,7 +214,7 @@ object MythDataProvider {
             shortHint = "메두사를 처치하고 안드로메다를 구한 영웅",
             attributes = "메두사, 날개 신발, 방패, 별자리",
             emoji = "🛡️",
-            characterDrawable = "char_perseus",
+            characterDrawable = "19_perseus",
             difficulty = 1
         ),
         MythCharacter(
@@ -225,7 +225,7 @@ object MythDataProvider {
             shortHint = "미노타우로스를 처치한 아테네의 영웅",
             attributes = "미로, 실타래, 아테네, 검",
             emoji = "🗡️",
-            characterDrawable = "char_theseus",
+            characterDrawable = "20_theseus",
             difficulty = 2
         ),
         MythCharacter(
@@ -236,7 +236,7 @@ object MythDataProvider {
             shortHint = "트로이 목마를 고안한 지략의 영웅",
             attributes = "트로이 목마, 지략, 활, 바다",
             emoji = "🐴",
-            characterDrawable = "char_odysseus",
+            characterDrawable = "21_odysseus",
             difficulty = 2
         ),
         MythCharacter(
@@ -247,7 +247,7 @@ object MythDataProvider {
             shortHint = "발꿈치가 유일한 약점인 트로이 전쟁의 영웅",
             attributes = "발꿈치, 갑옷, 창, 분노",
             emoji = "⚡",
-            characterDrawable = "char_achilles",
+            characterDrawable = "22_achilles",
             difficulty = 2
         ),
         MythCharacter(
@@ -258,7 +258,7 @@ object MythDataProvider {
             shortHint = "황금 양털을 찾아 아르고 원정대를 이끈 영웅",
             attributes = "황금 양털, 아르고호, 메데이아",
             emoji = "⚓",
-            characterDrawable = "char_jason",
+            characterDrawable = "23_jason",
             difficulty = 3
         ),
         MythCharacter(
@@ -269,7 +269,7 @@ object MythDataProvider {
             shortHint = "음악으로 저승까지 내려간 음악가",
             attributes = "리라, 음악, 저승, 사랑",
             emoji = "🎵",
-            characterDrawable = "char_orpheus",
+            characterDrawable = "24_orpheus",
             difficulty = 3
         ),
 
@@ -282,7 +282,7 @@ object MythDataProvider {
             shortHint = "눈을 마주치면 돌이 되는 뱀 머리카락 괴물",
             attributes = "뱀 머리카락, 돌, 고르곤, 날개",
             emoji = "🐍",
-            characterDrawable = "char_medusa",
+            characterDrawable = "25_medusa",
             difficulty = 1
         ),
         MythCharacter(
@@ -293,7 +293,7 @@ object MythDataProvider {
             shortHint = "미로에 사는 반인반우 괴물",
             attributes = "황소 머리, 미로, 크레타, 공물",
             emoji = "🐂",
-            characterDrawable = "char_minotaur",
+            characterDrawable = "26_minotaur",
             difficulty = 2
         ),
         MythCharacter(
@@ -304,7 +304,7 @@ object MythDataProvider {
             shortHint = "눈이 하나인 거인 대장장이",
             attributes = "외눈, 거인, 대장간, 동굴",
             emoji = "👁️",
-            characterDrawable = "char_cyclops",
+            characterDrawable = "27_cyclops",
             difficulty = 2
         ),
         MythCharacter(
@@ -315,7 +315,7 @@ object MythDataProvider {
             shortHint = "저승의 입구를 지키는 세 머리 개",
             attributes = "세 머리, 개, 저승, 파수꾼",
             emoji = "🐕",
-            characterDrawable = "char_cerberus",
+            characterDrawable = "28_cerberus",
             difficulty = 2
         ),
         MythCharacter(
@@ -326,7 +326,7 @@ object MythDataProvider {
             shortHint = "머리를 자르면 다시 자라는 다두 물뱀",
             attributes = "다두, 물뱀, 독, 레르나",
             emoji = "🐲",
-            characterDrawable = "char_hydra",
+            characterDrawable = "29_hydra",
             difficulty = 2
         ),
         MythCharacter(
@@ -337,7 +337,7 @@ object MythDataProvider {
             shortHint = "수수께끼를 내는 사자 몸통의 괴물",
             attributes = "수수께끼, 사자 몸, 여성 머리, 테베",
             emoji = "🦁",
-            characterDrawable = "char_sphinx",
+            characterDrawable = "30_sphinx",
             difficulty = 3
         ),
 
@@ -350,7 +350,7 @@ object MythDataProvider {
             shortHint = "인간에게 불을 가져다준 티탄",
             attributes = "불, 독수리, 형벌, 인류",
             emoji = "🔥",
-            characterDrawable = "char_prometheus",
+            characterDrawable = "31_prometheus",
             difficulty = 1
         ),
         MythCharacter(
@@ -361,7 +361,7 @@ object MythDataProvider {
             shortHint = "자식을 삼킨 티탄의 왕",
             attributes = "낫, 시간, 티탄, 왕",
             emoji = "⏰",
-            characterDrawable = "char_cronos",
+            characterDrawable = "32_cronos",
             difficulty = 2
         ),
         MythCharacter(
@@ -372,7 +372,7 @@ object MythDataProvider {
             shortHint = "영원히 하늘을 떠받치는 티탄",
             attributes = "하늘, 형벌, 티탄, 힘",
             emoji = "🌍",
-            characterDrawable = "char_atlas",
+            characterDrawable = "33_atlas",
             difficulty = 2
         ),
 
@@ -385,7 +385,7 @@ object MythDataProvider {
             shortHint = "호기심으로 상자를 열어 재앙을 풀어낸 여성",
             attributes = "상자, 호기심, 재앙, 희망",
             emoji = "📦",
-            characterDrawable = "char_pandora",
+            characterDrawable = "34_pandora",
             difficulty = 1
         ),
         MythCharacter(
@@ -396,7 +396,7 @@ object MythDataProvider {
             shortHint = "날개가 녹아 바다에 떨어진 소년",
             attributes = "날개, 밀랍, 태양, 추락",
             emoji = "🪶",
-            characterDrawable = "char_icarus",
+            characterDrawable = "35_icarus",
             difficulty = 2
         ),
         MythCharacter(
@@ -407,7 +407,7 @@ object MythDataProvider {
             shortHint = "자신의 모습에 반해 수선화가 된 미소년",
             attributes = "물, 수선화, 에코, 자기애",
             emoji = "🌼",
-            characterDrawable = "char_narcissus",
+            characterDrawable = "36_narcissus",
             difficulty = 3
         ),
         MythCharacter(
@@ -418,7 +418,7 @@ object MythDataProvider {
             shortHint = "황금 손을 가져 모든 것을 황금으로 만든 왕",
             attributes = "황금, 손, 욕심, 후회",
             emoji = "✨",
-            characterDrawable = "char_midas",
+            characterDrawable = "37_midas",
             difficulty = 2
         )
     )
