@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">아람 그리스 신화 퀴즈</string>
+    <string name="title_search">신화 인물 검색</string>
+    <string name="title_quiz">신화 퀴즈</string>
+    <string name="title_gallery">캐릭터 갤러리</string>
+    <string name="btn_search">신화 인물 검색</string>
+    <string name="btn_quiz">신화 인물 퀴즈</string>
+    <string name="btn_gallery">캐릭터 갤러리</string>
+    <string name="hint_search">이름, 특징으로 검색...</string>
+    <string name="quiz_correct">정답!</string>
+    <string name="quiz_wrong">틀렸습니다!</string>
+    <string name="quiz_timeout">시간 초과!</string>
+    <string name="welcome_message">신화 속 인물들을 만나보세요!</string>
+    <string name="app_description">아람 그리스 신화의 신, 영웅, 괴물들을\n검색하고 퀴즈로 배워보세요!</string>
+</resources>

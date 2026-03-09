@@ -1,0 +1,3 @@
+-keep class com.mythology.quiz.data.** { *; }
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
