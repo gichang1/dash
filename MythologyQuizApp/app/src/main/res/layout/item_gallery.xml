@@ -21,6 +21,16 @@
             android:padding="12dp"
             android:gravity="center">
 
+            <!-- Character image (local drawable) -->
+            <ImageView
+                android:id="@+id/ivGalleryImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:layout_marginBottom="4dp"
+                android:visibility="gone"
+                android:contentDescription="캐릭터" />
+
             <TextView
                 android:id="@+id/tvGalleryEmoji"
                 android:layout_width="wrap_content"

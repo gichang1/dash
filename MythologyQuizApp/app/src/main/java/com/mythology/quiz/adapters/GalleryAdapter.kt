@@ -30,7 +30,17 @@ class GalleryAdapter(
         fun bind(character: MythCharacter) {
             binding.apply {
                 if (character.isUnlocked) {
-                    tvGalleryEmoji.text = character.emoji
+                    val resId = root.context.resources.getIdentifier(
+                        character.characterDrawable, "drawable", root.context.packageName)
+                    if (resId != 0) {
+                        ivGalleryImage.setImageResource(resId)
+                        ivGalleryImage.visibility = android.view.View.VISIBLE
+                        tvGalleryEmoji.visibility = android.view.View.GONE
+                    } else {
+                        ivGalleryImage.visibility = android.view.View.GONE
+                        tvGalleryEmoji.visibility = android.view.View.VISIBLE
+                        tvGalleryEmoji.text = character.emoji
+                    }
                     tvGalleryName.text = character.nameKorean
                     cardGallery.alpha = 1f
                     ivLock.visibility = android.view.View.GONE
@@ -44,6 +54,8 @@ class GalleryAdapter(
                             }.start()
                     }
                 } else {
+                    ivGalleryImage.visibility = android.view.View.GONE
+                    tvGalleryEmoji.visibility = android.view.View.VISIBLE
                     tvGalleryEmoji.text = "❓"
                     tvGalleryName.text = "???"
                     cardGallery.alpha = 0.6f

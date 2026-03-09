@@ -97,8 +97,18 @@ class QuizActivity : AppCompatActivity() {
             .setDuration(300)
             .start()
 
-        // Set emoji/hint
-        binding.tvQuestionEmoji.text = question.character.emoji
+        // Set character image or emoji
+        val resId = resources.getIdentifier(
+            question.character.characterDrawable, "drawable", packageName)
+        if (resId != 0) {
+            binding.ivQuestionImage.setImageResource(resId)
+            binding.ivQuestionImage.visibility = View.VISIBLE
+            binding.tvQuestionEmoji.visibility = View.GONE
+        } else {
+            binding.ivQuestionImage.visibility = View.GONE
+            binding.tvQuestionEmoji.visibility = View.VISIBLE
+            binding.tvQuestionEmoji.text = question.character.emoji
+        }
         binding.tvQuestionHint.text = question.hint
         binding.tvCategory.text = question.character.category
         binding.tvDifficulty.text = "★".repeat(question.character.difficulty)

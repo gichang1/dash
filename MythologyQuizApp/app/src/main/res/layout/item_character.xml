@@ -16,7 +16,17 @@
         android:padding="12dp"
         android:gravity="center">
 
-        <!-- Emoji -->
+        <!-- Character image (local drawable) -->
+        <ImageView
+            android:id="@+id/ivCharacterImage"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            android:contentDescription="캐릭터" />
+
+        <!-- Emoji (fallback) -->
         <TextView
             android:id="@+id/tvCharacterEmoji"
             android:layout_width="wrap_content"

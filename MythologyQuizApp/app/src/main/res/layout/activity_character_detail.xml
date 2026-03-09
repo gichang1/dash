@@ -71,7 +71,16 @@
                         android:textSize="12sp"
                         android:layout_marginBottom="12dp" />
 
-                    <!-- Cute character ASCII art -->
+                    <!-- Character image (local drawable) -->
+                    <ImageView
+                        android:id="@+id/ivCharacterImage"
+                        android:layout_width="180dp"
+                        android:layout_height="180dp"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone"
+                        android:contentDescription="캐릭터" />
+
+                    <!-- Cute character ASCII art (fallback) -->
                     <TextView
                         android:id="@+id/tvCuteCharacter"
                         android:layout_width="wrap_content"

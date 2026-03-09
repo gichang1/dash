@@ -37,6 +37,16 @@ class CharacterDetailActivity : AppCompatActivity() {
 
     private fun displayCharacter(character: MythCharacter) {
         binding.apply {
+            val resId = resources.getIdentifier(
+                character.characterDrawable, "drawable", packageName)
+            if (resId != 0) {
+                ivCharacterImage.setImageResource(resId)
+                ivCharacterImage.visibility = View.VISIBLE
+                tvCuteCharacter.visibility = View.GONE
+            } else {
+                ivCharacterImage.visibility = View.GONE
+                tvCuteCharacter.visibility = View.VISIBLE
+            }
             tvCharacterEmoji.text = character.emoji
             tvCharacterName.text = character.nameKorean
             tvGreekName.text = character.nameGreek

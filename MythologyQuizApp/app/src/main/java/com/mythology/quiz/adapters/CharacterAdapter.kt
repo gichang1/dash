@@ -2,6 +2,7 @@ package com.mythology.quiz.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +30,17 @@ class CharacterAdapter(
 
         fun bind(character: MythCharacter) {
             binding.apply {
-                tvCharacterEmoji.text = character.emoji
+                val resId = root.context.resources.getIdentifier(
+                    character.characterDrawable, "drawable", root.context.packageName)
+                if (resId != 0) {
+                    ivCharacterImage.setImageResource(resId)
+                    ivCharacterImage.visibility = View.VISIBLE
+                    tvCharacterEmoji.visibility = View.GONE
+                } else {
+                    ivCharacterImage.visibility = View.GONE
+                    tvCharacterEmoji.visibility = View.VISIBLE
+                    tvCharacterEmoji.text = character.emoji
+                }
                 tvCharacterName.text = character.nameKorean
                 tvCharacterGreek.text = character.nameGreek
                 tvCharacterCategory.text = character.category
