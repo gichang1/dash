@@ -851,13 +851,14 @@ function selectAnswer(chosen, btn) {
     qEmoji.style.display = 'none';
     qImg.classList.add('reveal-img');
     playCorrectSound();
+    setTimeout(() => { currentQIdx++; renderQuestion(); }, 4000);
   } else {
     btn.classList.add('wrong');
     btn.classList.add('shake');
     allBtns.forEach(b => { if (b.textContent === q.correct) b.classList.add('reveal'); });
     playWrongSound();
+    setTimeout(() => { currentQIdx++; renderQuestion(); }, 1800);
   }
-  setTimeout(() => { currentQIdx++; renderQuestion(); }, 1400);
 }
 
 function timeOut(q) {
@@ -867,7 +868,6 @@ function timeOut(q) {
     b.disabled = true;
     if (b.textContent === q.correct) b.classList.add('reveal');
   });
-  setTimeout(() => { currentQIdx++; renderQuestion(); }, 1400);
 }
 
 // ===== RESULT =====
