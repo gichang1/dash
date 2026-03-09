@@ -442,6 +442,113 @@
     .options-grid { grid-template-columns: 1fr; }
     .gallery-grid { grid-template-columns: repeat(3, 1fr); }
   }
+
+  /* ===== AVATAR SCREEN ===== */
+  #avatar { justify-content: flex-start; align-items: center; gap: 10px; padding: 12px 16px; }
+  .avatar-stage {
+    position: relative;
+    width: 220px; height: 300px;
+    margin: 0 auto;
+    flex-shrink: 0;
+  }
+  .avatar-svg { width: 220px; height: 300px; }
+  /* item overlays */
+  .av-item {
+    position: absolute;
+    font-size: 28px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+    transition: transform 0.3s;
+    pointer-events: none;
+  }
+  .av-head  { top: -14px; left: 50%; transform: translateX(-50%); }
+  .av-hand  { right: -18px; top: 48%; transform: translateY(-50%); }
+  .av-back  { left: -18px; top: 36%; transform: translateY(-50%); }
+  .av-neck  { top: 42%; left: 50%; transform: translate(-50%,-50%); font-size: 18px; }
+
+  .avatar-slots {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .slot-box {
+    width: 56px; height: 56px;
+    background: var(--card);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 24px; cursor: pointer; position: relative;
+    transition: border-color 0.2s;
+  }
+  .slot-box.has-item { border-color: rgba(255,215,0,0.6); }
+  .slot-box .slot-label { font-size: 9px; opacity: 0.7; margin-top: 2px; }
+  .av-name-tag {
+    font-size: 11px; opacity: 0.6; text-align: center; margin-top: -4px;
+  }
+
+  /* ===== WARDROBE SCREEN ===== */
+  #wardrobe { justify-content: flex-start; align-items: center; gap: 10px; padding: 12px 16px; }
+  .wardrobe-tabs {
+    display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+  }
+  .wd-tab {
+    padding: 6px 14px; border: 2px solid var(--card-border);
+    border-radius: 20px; background: var(--card);
+    color: white; font-size: 13px; cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .wd-tab.active { border-color: var(--accent); background: rgba(255,215,0,0.15); color: var(--accent); }
+  .wardrobe-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+    width: 100%; max-width: 500px;
+  }
+  .wd-item {
+    background: var(--card);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 8px 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .wd-item:active { transform: scale(0.92); }
+  .wd-item.equipped { border-color: #FFD700; background: rgba(255,215,0,0.15); }
+  .wd-item.locked { opacity: 0.35; cursor: default; filter: grayscale(1); }
+  .wd-emoji { font-size: 26px; display: block; }
+  .wd-name { font-size: 9px; margin-top: 3px; line-height: 1.2; }
+  .wd-equipped-badge {
+    position: absolute; top: 3px; right: 3px;
+    width: 12px; height: 12px; background: #FFD700;
+    border-radius: 50%; font-size: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #1a1a1a;
+  }
+
+  /* item acquisition popup */
+  .item-popup {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+  }
+  .item-popup-card {
+    background: linear-gradient(135deg, #1a1a4e, #2d1b69);
+    border: 2px solid #FFD700;
+    border-radius: 20px;
+    padding: 24px 32px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(255,215,0,0.4);
+    animation: itemPopIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    max-width: 260px;
+  }
+  @keyframes itemPopIn {
+    0% { transform: scale(0) rotate(-10deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  .item-popup-emoji { font-size: 52px; display: block; margin-bottom: 8px; }
+  .item-popup-title { font-size: 11px; color: #FFD700; letter-spacing: 1px; margin-bottom: 4px; }
+  .item-popup-name { font-size: 18px; font-weight: bold; margin-bottom: 4px; }
+  .item-popup-desc { font-size: 12px; opacity: 0.75; }
+
 </style>
 </head>
 <body>
@@ -456,6 +563,7 @@
   <button class="btn-home btn-quiz" onclick="showDifficulty()">🎯 신화 퀴즈 시작</button>
   <button class="btn-home btn-search" onclick="showSearch()">🔍 신화 인물 검색</button>
   <button class="btn-home btn-gallery" onclick="showGallery()">🎨 캐릭터 도감</button>
+  <button class="btn-home btn-avatar" onclick="showAvatar()" style="background:linear-gradient(135deg,#E91E8C,#9C27B0);color:white">💃 내 아바타</button>
 </div>
 
 <!-- DIFFICULTY -->
@@ -513,6 +621,7 @@
     <button class="btn-result btn-again" onclick="showDifficulty()">🔄 다시 도전</button>
     <button class="btn-result btn-gallery2" onclick="showGallery()">🎨 도감 보기</button>
     <button class="btn-result btn-home2" onclick="showHome()">🏠 홈</button>
+    <button class="btn-result" style="background:linear-gradient(135deg,#E91E8C,#9C27B0);color:white;border:none;border-radius:12px;padding:12px 16px;font-size:14px;font-weight:bold;cursor:pointer" onclick="showAvatar()">💃 아바타 꾸미기</button>
   </div>
 </div>
 
@@ -709,6 +818,153 @@ function showDetail(char, from) {
   showScreen('detail');
 }
 
+
+// ===== AVATAR SYSTEM =====
+const CHAR_ITEMS = {
+  "01_zeus":       { name:"번개 왕관",     emoji:"⚡", slot:"head", desc:"올림포스의 왕 제우스의 번개" },
+  "02_hera":       { name:"여왕 왕관",     emoji:"👑", slot:"head", desc:"신들의 여왕 헤라의 상징" },
+  "03_poseidon":   { name:"삼지창",        emoji:"🔱", slot:"hand", desc:"바다를 지배하는 포세이돈의 무기" },
+  "04_athena":     { name:"지혜의 올빼미", emoji:"🦉", slot:"neck", desc:"아테나가 아끼는 지혜의 새" },
+  "05_apollo":     { name:"황금 리라",     emoji:"🎵", slot:"hand", desc:"아폴론의 음악과 예언의 악기" },
+  "06_artemis":    { name:"달의 티아라",   emoji:"🌙", slot:"head", desc:"달의 여신 아르테미스의 보석" },
+  "07_aphrodite":  { name:"황금 장미",     emoji:"🌹", slot:"hand", desc:"사랑과 아름다움의 여신의 꽃" },
+  "08_ares":       { name:"전쟁의 검",     emoji:"⚔️", slot:"hand", desc:"전쟁의 신 아레스의 날카로운 검" },
+  "09_hephaestus": { name:"불꽃 망치",     emoji:"🔨", slot:"hand", desc:"헤파이토스가 신들의 무기를 만든 망치" },
+  "10_hermes":     { name:"날개 모자",     emoji:"🎩", slot:"head", desc:"전령의 신 헤르메스의 마법 모자" },
+  "11_demeter":    { name:"밀 화관",       emoji:"🌾", slot:"head", desc:"풍요의 여신 데메테르의 왕관" },
+  "12_dionysus":   { name:"포도 왕관",     emoji:"🍇", slot:"head", desc:"축제와 포도주의 신 디오니소스" },
+  "13_hades":      { name:"어둠의 투구",   emoji:"🪖", slot:"head", desc:"하데스의 투명 투구" },
+  "14_persephone": { name:"꽃 왕관",       emoji:"🌸", slot:"head", desc:"봄의 여신 페르세포네의 화관" },
+  "15_eros":       { name:"큐피드 활",     emoji:"🏹", slot:"hand", desc:"사랑을 쏘는 에로스의 황금 활" },
+  "16_nike":       { name:"황금 날개",     emoji:"🪶", slot:"back", desc:"승리의 여신 니케의 찬란한 날개" },
+  "17_hypnos":     { name:"양귀비 핀",     emoji:"🌺", slot:"head", desc:"잠의 신 히프노스의 꿈꾸는 꽃" },
+  "18_heracles":   { name:"사자 망토",     emoji:"🦁", slot:"back", desc:"헤라클레스가 사냥한 네메아 사자 가죽" },
+  "19_perseus":    { name:"날개 투구",     emoji:"⛑️", slot:"head", desc:"페르세우스가 받은 헤르메스의 투구" },
+  "20_theseus":    { name:"영웅의 검",     emoji:"🗡️", slot:"hand", desc:"테세우스가 미노타우로스를 처치한 검" },
+  "21_odysseus":   { name:"항해 나침반",   emoji:"⚓", slot:"neck", desc:"오디세우스의 긴 항해의 나침반" },
+  "22_achilles":   { name:"황금 방패",     emoji:"🛡️", slot:"hand", desc:"아킬레우스의 불사신 황금 방패" },
+  "23_jason":      { name:"황금 양털",     emoji:"🐑", slot:"back", desc:"이아손이 구한 전설의 황금 양털" },
+  "24_orpheus":    { name:"마법 리라",     emoji:"🪗", slot:"hand", desc:"오르페우스가 신들도 감동시킨 리라" },
+  "25_medusa":     { name:"뱀 브로치",     emoji:"🐍", slot:"neck", desc:"메두사를 기억하는 신비한 뱀 장식" },
+  "26_minotaur":   { name:"황소 뿔 띠",   emoji:"🐂", slot:"head", desc:"미노타우로스의 강인한 뿔 머리띠" },
+  "27_cyclops":    { name:"단안경",        emoji:"🔭", slot:"neck", desc:"키클롭스의 단 하나의 눈 모양 장식" },
+  "28_cerberus":   { name:"강아지 귀",     emoji:"🐾", slot:"head", desc:"케르베로스에서 받은 귀여운 귀 머리띠" },
+  "29_hydra":      { name:"에메랄드 목걸이","emoji":"💚", slot:"neck", desc:"히드라의 초록 비늘로 만든 목걸이" },
+  "30_sphinx":     { name:"수수께끼 책",   emoji:"📖", slot:"hand", desc:"스핑크스의 수수께끼가 담긴 책" },
+  "31_prometheus": { name:"불꽃 팔찌",     emoji:"🔥", slot:"neck", desc:"프로메테우스가 인간에게 준 불의 팔찌" },
+  "32_cronus":     { name:"황금 낫",       emoji:"🌛", slot:"hand", desc:"시간의 신 크로노스의 황금 낫" },
+  "33_atlas":      { name:"지구 목걸이",   emoji:"🌍", slot:"neck", desc:"아틀라스가 짊어진 세계의 미니어처" },
+  "34_pandora":    { name:"판도라 상자",   emoji:"📦", slot:"hand", desc:"희망이 담긴 판도라의 마법 상자" },
+  "35_icarus":     { name:"밀랍 날개",     emoji:"🦅", slot:"back", desc:"이카루스의 아버지가 만든 날개" },
+  "36_narcissus":  { name:"수선화 화관",   emoji:"💐", slot:"head", desc:"나르키소스가 사랑한 꽃의 화관" },
+  "37_midas":      { name:"황금 장갑",     emoji:"✨", slot:"hand", desc:"모든 것을 금으로 만드는 미다스의 장갑" }
+};
+
+// equipped: { head: imgKey|null, neck: imgKey|null, hand: imgKey|null, back: imgKey|null }
+let equipped = JSON.parse(localStorage.getItem('av_equipped') || '{"head":null,"neck":null,"hand":null,"back":null}');
+let unlockedItems = new Set(JSON.parse(localStorage.getItem('av_unlocked') || '[]'));
+
+function saveAvatar() {
+  localStorage.setItem('av_equipped', JSON.stringify(equipped));
+  localStorage.setItem('av_unlocked', JSON.stringify([...unlockedItems]));
+}
+
+// called after correct answer
+function unlockItem(imgKey) {
+  if (!CHAR_ITEMS[imgKey]) return;
+  const isNew = !unlockedItems.has(imgKey);
+  unlockedItems.add(imgKey);
+  saveAvatar();
+  showItemPopup(imgKey, isNew);
+}
+
+function showItemPopup(imgKey, isNew) {
+  const item = CHAR_ITEMS[imgKey];
+  if (!item) return;
+  const popup = document.getElementById('item-popup');
+  document.getElementById('ip-emoji').textContent = item.emoji;
+  document.getElementById('ip-name').textContent = item.name;
+  document.getElementById('ip-desc').textContent = isNew ? '🆕 새 아이템! ' + item.desc : '이미 보유 중 · ' + item.desc;
+  popup.style.display = 'flex';
+  setTimeout(() => { popup.style.display = 'none'; }, 2200);
+}
+
+function showAvatar() {
+  renderAvatar();
+  showScreen('avatar');
+}
+function showWardrobe(filterSlot) {
+  const tab = filterSlot || 'all';
+  // activate correct tab
+  document.querySelectorAll('.wd-tab').forEach(t => t.classList.remove('active'));
+  const tabs = document.querySelectorAll('.wd-tab');
+  const idx = ['all','head','neck','hand','back'].indexOf(tab);
+  if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
+  renderWardrobeTab(tab, null);
+  showScreen('wardrobe');
+}
+
+function renderAvatar() {
+  const slotNames = { head:'머리', neck:'목', hand:'손', back:'등' };
+  const defaultEmoji = { head:'👑', neck:'💎', hand:'🤚', back:'🎒' };
+  let nameList = [];
+  ['head','neck','hand','back'].forEach(slot => {
+    const key = equipped[slot];
+    const item = key ? CHAR_ITEMS[key] : null;
+    // overlay
+    const el = document.getElementById('av-' + slot + '-item');
+    if (el) el.textContent = item ? item.emoji : '';
+    // slot box
+    const box = document.getElementById('slot-' + slot);
+    const emojiEl = document.getElementById('slot-' + slot + '-emoji');
+    if (box) box.classList.toggle('has-item', !!item);
+    if (emojiEl) emojiEl.textContent = item ? item.emoji : defaultEmoji[slot];
+    if (item) nameList.push(item.name);
+  });
+  const tag = document.getElementById('av-equipped-names');
+  if (tag) tag.textContent = nameList.length ? '장착: ' + nameList.join(' · ') : '아직 아무것도 장착되지 않았어요';
+}
+
+function renderWardrobeTab(slot, btn) {
+  if (btn) {
+    document.querySelectorAll('.wd-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const grid = document.getElementById('wardrobe-grid');
+  if (!grid) return;
+  const keys = Object.keys(CHAR_ITEMS).filter(k => slot === 'all' || CHAR_ITEMS[k].slot === slot);
+  grid.innerHTML = keys.map(k => {
+    const item = CHAR_ITEMS[k];
+    const unlocked = unlockedItems.has(k);
+    const isEquipped = equipped[item.slot] === k;
+    return `<div class="wd-item ${isEquipped?'equipped':''} ${unlocked?'':'locked'}"
+      onclick="${unlocked ? `equipItem('${k}')` : ''}">
+      ${isEquipped ? '<div class="wd-equipped-badge">✓</div>' : ''}
+      <span class="wd-emoji">${item.emoji}</span>
+      <div class="wd-name">${item.name}</div>
+    </div>`;
+  }).join('');
+}
+
+function equipItem(imgKey) {
+  const item = CHAR_ITEMS[imgKey];
+  if (!item || !unlockedItems.has(imgKey)) return;
+  // toggle: if already equipped, unequip
+  if (equipped[item.slot] === imgKey) {
+    equipped[item.slot] = null;
+  } else {
+    equipped[item.slot] = imgKey;
+  }
+  saveAvatar();
+  // refresh wardrobe grid with current tab
+  const activeTab = document.querySelector('.wd-tab.active');
+  const currentTab = activeTab ? (activeTab.textContent.replace(/[^a-z]/g,'') || 'all') : 'all';
+  const tabMap = {'전체':'all','머리':'head','목':'neck','손':'hand','등':'back'};
+  const rawText = activeTab ? activeTab.textContent.trim() : '전체';
+  const tabKey = tabMap[rawText] || 'all';
+  renderWardrobeTab(tabKey, null);
+}
+
 // ===== SEARCH =====
 function renderSearch() {
   const chipWrap = document.getElementById('cat-chips');
@@ -851,6 +1107,8 @@ function selectAnswer(chosen, btn) {
     qEmoji.style.display = 'none';
     qImg.classList.add('reveal-img');
     playCorrectSound();
+    // 아이템 획득
+    unlockItem(q.char.imgKey);
     setTimeout(() => { currentQIdx++; renderQuestion(); }, 3500);
   } else {
     btn.classList.add('wrong');
@@ -1208,5 +1466,124 @@ document.addEventListener('click', () => {
   }
 }, { once: true });
 </script>
+
+<!-- AVATAR -->
+<div id="avatar" class="screen">
+  <div style="display:flex;align-items:center;justify-content:space-between;width:100%;max-width:500px">
+    <button class="back-btn" style="position:static;margin:0" onclick="showHome()">← 홈</button>
+    <div style="font-size:16px;font-weight:bold;color:var(--accent)">✨ 내 아바타</div>
+    <button class="back-btn" style="position:static;margin:0" onclick="showWardrobe()">👗 옷장</button>
+  </div>
+
+  <!-- avatar stage -->
+  <div class="avatar-stage" id="avatar-stage">
+    <!-- back item -->
+    <span class="av-item av-back" id="av-back-item"></span>
+    <!-- SVG girl -->
+    <svg class="avatar-svg" viewBox="0 0 220 300" xmlns="http://www.w3.org/2000/svg">
+      <!-- long hair back -->
+      <path d="M 60 85 Q 28 140 30 250" stroke="#3D1C00" stroke-width="26" fill="none" stroke-linecap="round"/>
+      <path d="M 160 85 Q 192 140 190 250" stroke="#3D1C00" stroke-width="26" fill="none" stroke-linecap="round"/>
+      <ellipse cx="110" cy="72" rx="55" ry="58" fill="#3D1C00"/>
+      <!-- body / dress -->
+      <path d="M 74 148 Q 60 190 52 270 L 168 270 Q 160 190 146 148 Z" fill="#9B59B6"/>
+      <!-- dress highlight -->
+      <path d="M 90 170 Q 110 165 130 170 Q 128 200 110 205 Q 92 200 90 170 Z" fill="rgba(255,255,255,0.12)"/>
+      <!-- dress waist ribbon -->
+      <path d="M 74 162 Q 110 155 146 162" stroke="#FFD700" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- arms -->
+      <path d="M 74 148 Q 50 155 44 190" stroke="#FFD5B0" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <path d="M 146 148 Q 170 155 176 190" stroke="#FFD5B0" stroke-width="16" fill="none" stroke-linecap="round"/>
+      <!-- hands -->
+      <ellipse cx="44" cy="196" rx="10" ry="9" fill="#FFD5B0"/>
+      <ellipse cx="176" cy="196" rx="10" ry="9" fill="#FFD5B0"/>
+      <!-- neck -->
+      <rect x="95" y="128" width="30" height="26" rx="6" fill="#FFD5B0"/>
+      <!-- face -->
+      <ellipse cx="110" cy="78" rx="44" ry="50" fill="#FFD5B0"/>
+      <!-- cheeks -->
+      <ellipse cx="84" cy="90" rx="10" ry="7" fill="#FFB0B0" opacity="0.45"/>
+      <ellipse cx="136" cy="90" rx="10" ry="7" fill="#FFB0B0" opacity="0.45"/>
+      <!-- eyes -->
+      <ellipse cx="94" cy="74" rx="7" ry="8" fill="#2C1810"/>
+      <ellipse cx="126" cy="74" rx="7" ry="8" fill="#2C1810"/>
+      <ellipse cx="94" cy="76" rx="5" ry="6" fill="#5C3317"/>
+      <ellipse cx="126" cy="76" rx="5" ry="6" fill="#5C3317"/>
+      <circle cx="97" cy="70" r="2.5" fill="white"/>
+      <circle cx="129" cy="70" r="2.5" fill="white"/>
+      <!-- eyelashes -->
+      <path d="M 87 67 L 84 63 M 91 65 L 90 61 M 95 65 L 95 60 M 99 66 L 100 62" stroke="#2C1810" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M 119 66 L 118 62 M 123 65 L 123 60 M 127 65 L 128 61 M 131 67 L 134 63" stroke="#2C1810" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- nose -->
+      <path d="M 107 90 Q 110 95 113 90" stroke="#FFBA8A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      <!-- mouth smile -->
+      <path d="M 98 102 Q 110 112 122 102" stroke="#E06060" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- hair front / bangs -->
+      <path d="M 66 55 Q 80 20 110 18 Q 140 20 154 55 L 148 65 Q 140 40 110 38 Q 80 40 72 65 Z" fill="#3D1C00"/>
+      <path d="M 66 55 Q 60 75 68 88" fill="#3D1C00"/>
+      <path d="M 154 55 Q 160 75 152 88" fill="#3D1C00"/>
+      <!-- hair side strands -->
+      <path d="M 68 88 Q 55 110 58 130" stroke="#3D1C00" stroke-width="12" fill="none" stroke-linecap="round"/>
+      <path d="M 152 88 Q 165 110 162 130" stroke="#3D1C00" stroke-width="12" fill="none" stroke-linecap="round"/>
+    </svg>
+    <!-- neck item -->
+    <span class="av-item av-neck" id="av-neck-item"></span>
+    <!-- hand item -->
+    <span class="av-item av-hand" id="av-hand-item"></span>
+    <!-- head item -->
+    <span class="av-item av-head" id="av-head-item"></span>
+  </div>
+
+  <!-- equipped slot summary -->
+  <div class="avatar-slots" id="av-slots">
+    <div class="slot-box" id="slot-head" onclick="showWardrobe('head')">
+      <span id="slot-head-emoji">👑</span>
+      <span class="slot-label">머리</span>
+    </div>
+    <div class="slot-box" id="slot-neck" onclick="showWardrobe('neck')">
+      <span id="slot-neck-emoji">💎</span>
+      <span class="slot-label">목</span>
+    </div>
+    <div class="slot-box" id="slot-hand" onclick="showWardrobe('hand')">
+      <span id="slot-hand-emoji">🤚</span>
+      <span class="slot-label">손</span>
+    </div>
+    <div class="slot-box" id="slot-back" onclick="showWardrobe('back')">
+      <span id="slot-back-emoji">🎒</span>
+      <span class="slot-label">등</span>
+    </div>
+  </div>
+  <div class="av-name-tag" id="av-equipped-names"></div>
+  <div style="font-size:12px;opacity:0.5;text-align:center">슬롯을 눌러 옷장에서 교체하세요</div>
+</div>
+
+<!-- WARDROBE -->
+<div id="wardrobe" class="screen">
+  <div style="display:flex;align-items:center;justify-content:space-between;width:100%;max-width:500px">
+    <button class="back-btn" style="position:static;margin:0" onclick="showAvatar()">← 아바타</button>
+    <div style="font-size:16px;font-weight:bold;color:var(--accent)">👗 옷장</div>
+    <div style="width:60px"></div>
+  </div>
+  <div class="wardrobe-tabs">
+    <button class="wd-tab active" onclick="renderWardrobeTab('all',this)">전체</button>
+    <button class="wd-tab" onclick="renderWardrobeTab('head',this)">👑 머리</button>
+    <button class="wd-tab" onclick="renderWardrobeTab('neck',this)">💎 목</button>
+    <button class="wd-tab" onclick="renderWardrobeTab('hand',this)">⚔️ 손</button>
+    <button class="wd-tab" onclick="renderWardrobeTab('back',this)">🪶 등</button>
+  </div>
+  <div style="font-size:12px;opacity:0.55;text-align:center">✅ = 장착중 • 회색 = 미획득</div>
+  <div class="wardrobe-grid" id="wardrobe-grid"></div>
+</div>
+
+<!-- item acquisition popup (shared) -->
+<div class="item-popup" id="item-popup" style="display:none">
+  <div class="item-popup-card">
+    <span class="item-popup-emoji" id="ip-emoji">⚡</span>
+    <div class="item-popup-title">🎁 아이템 획득!</div>
+    <div class="item-popup-name" id="ip-name">번개 왕관</div>
+    <div class="item-popup-desc" id="ip-desc">제우스의 상징</div>
+  </div>
+</div>
+
 </body>
 </html>
