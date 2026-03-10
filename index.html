@@ -535,12 +535,12 @@
     
     <script>
         Chart.register(ChartDataLabels);
-        
+
         Chart.defaults.color = '#E8E8E8';
         Chart.defaults.font.family = 'Noto Sans KR';
         Chart.defaults.font.size = 16;
         Chart.defaults.plugins.legend.labels.usePointStyle = true;
-        
+
         const designColors = {
             primary: '#4ECDC4',
             secondary: '#FF6B9D',
@@ -555,267 +555,257 @@
             gradient5: 'rgba(243, 156, 18, 0.8)',
             gradient6: 'rgba(46, 204, 113, 0.8)'
         };
-        
+
         const animationConfig = {
             duration: 2500,
             easing: 'easeInOutCubic',
             delay: (context) => context.dataIndex * 300
         };
 
-        let refreshCountdown = 10;
-        let countdownInterval;
-        
-        function updateRefreshIndicator() {
-            const indicator = document.getElementById('refreshIndicator');
-            indicator.textContent = `다음 새로고침: ${refreshCountdown}초`;
-            refreshCountdown--;
-            
-            if (refreshCountdown < 0) {
-                indicator.textContent = '새로고침 중...';
-                clearInterval(countdownInterval);
-                location.reload();
-            }
+        // 데이터 폴더 경로 설정 (변경 가능)
+        const DATA_FOLDER = './data';
+        const DATA_FILE = `${DATA_FOLDER}/dashboard.json`;
+
+        let chartInstances = {};
+
+        function renderMetrics(metrics) {
+            const section = document.querySelector('.metrics-section');
+            section.innerHTML = '';
+            metrics.forEach((m, i) => {
+                const isPulse = i === 0 ? ' pulse-effect' : '';
+                section.innerHTML += `
+                    <div class="metric-card${isPulse}">
+                        <div class="metric-title">${m.label}</div>
+                        <div class="metric-value" data-target="${m.value}">${m.value}</div>
+                        <div class="metric-unit">${m.unit}</div>
+                    </div>`;
+            });
         }
 
-        function startRefreshCountdown() {
-            refreshCountdown = 10;
-            countdownInterval = setInterval(updateRefreshIndicator, 1000);
+        function renderFoodtechCard(data) {
+            const list = document.getElementById('foodtechList');
+            list.innerHTML = '';
+            data.foodtechProjects.forEach(p => {
+                list.innerHTML += `
+                    <li class="item">
+                        <div class="item-name">
+                            ${p.name}
+                            <div class="field-badge ${p.badge}">${p.badgeText}</div>
+                        </div>
+                        <div class="item-value">${p.tasks}개<br>${p.budget}</div>
+                    </li>`;
+            });
+            list.innerHTML += `
+                <li class="item"><div class="item-name">과제수 총계</div><div class="item-value">${data.foodtechTotal.tasks}개</div></li>
+                <li class="item"><div class="item-name">예산 총계</div><div class="item-value">${data.foodtechTotal.budget}</div></li>`;
         }
-        
-        const budgetCtx = document.getElementById('budgetChart').getContext('2d');
-        new Chart(budgetCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Greenbio', 'Foodtech'],
-                datasets: [{
-                    data: [284.1, 114.3],
-                    backgroundColor: [designColors.gradient1, designColors.gradient2],
-                    borderColor: [designColors.primary, designColors.secondary],
-                    borderWidth: 2,
-                    borderRadius: 8,
-                    borderSkipped: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: animationConfig,
-                plugins: {
-                    legend: { display: false },
-                    datalabels: {
-                        display: true,
-                        color: '#FFFFFF',
-                        font: {
-                            size: 18,
-                            weight: 'bold'
-                        },
-                        formatter: function(value) {
-                            return value + '억원';
-                        },
-                        anchor: 'center',
-                        align: 'center'
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(47, 27, 77, 0.95)',
-                        titleColor: designColors.primary,
-                        bodyColor: designColors.white,
-                        borderColor: designColors.primary,
+
+        function renderGreenbioCard(data) {
+            const list = document.getElementById('greenbioList');
+            list.innerHTML = '';
+            data.greenbioProjects.forEach(p => {
+                const badges = p.badges.map(b => `<div class="field-badge ${b.type}">${b.text}</div>`).join('');
+                list.innerHTML += `
+                    <li class="item">
+                        <div class="item-name">${p.name}${badges}</div>
+                        <div class="item-value">${p.tasks}개<br>${p.budget}</div>
+                    </li>`;
+            });
+            list.innerHTML += `
+                <li class="item"><div class="item-name">과제수 총계</div><div class="item-value">${data.greenbioTotal.tasks}개</div></li>
+                <li class="item"><div class="item-name">예산 총계</div><div class="item-value">${data.greenbioTotal.budget}</div></li>`;
+        }
+
+        function renderEndStatusCard(statusList) {
+            const list = document.getElementById('endStatusList');
+            list.innerHTML = '';
+            statusList.forEach(s => {
+                list.innerHTML += `
+                    <li class="item status-item">
+                        <div class="item-value">${s.year}</div>
+                        <div class="item-name">${s.name}</div>
+                    </li>`;
+            });
+        }
+
+        function renderCharts(data) {
+            // 기존 차트 제거
+            Object.values(chartInstances).forEach(c => c.destroy());
+            chartInstances = {};
+
+            const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+            chartInstances.budget = new Chart(budgetCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.budgetByField.map(d => d.label),
+                    datasets: [{
+                        data: data.budgetByField.map(d => d.value),
+                        backgroundColor: [designColors.gradient1, designColors.gradient2],
+                        borderColor: [designColors.primary, designColors.secondary],
                         borderWidth: 2,
-                        titleFont: { size: 18, weight: 'bold' },
-                        bodyFont: { size: 16, weight: 'bold' },
-                        callbacks: {
-                            label: function(context) {
-                                return context.parsed.y + '억원';
-                            }
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: animationConfig,
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            display: true,
+                            color: '#FFFFFF',
+                            font: { size: 18, weight: 'bold' },
+                            formatter: value => value + '억원',
+                            anchor: 'center',
+                            align: 'center'
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(47, 27, 77, 0.95)',
+                            titleColor: designColors.primary,
+                            bodyColor: designColors.white,
+                            borderColor: designColors.primary,
+                            borderWidth: 2,
+                            titleFont: { size: 18, weight: 'bold' },
+                            bodyFont: { size: 16, weight: 'bold' },
+                            callbacks: { label: ctx => ctx.parsed.y + '억원' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(78, 205, 196, 0.2)', lineWidth: 1 },
+                            ticks: { color: designColors.white, font: { size: 16, weight: 'bold' }, callback: v => v + '억' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: designColors.white, font: { size: 17, weight: 'bold' } }
                         }
                     }
+                }
+            });
+
+            const fieldCtx = document.getElementById('fieldChart').getContext('2d');
+            chartInstances.field = new Chart(fieldCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: data.tasksByField.map(d => `${d.label} (${d.value}과제)`),
+                    datasets: [{
+                        data: data.tasksByField.map(d => d.value),
+                        backgroundColor: [designColors.gradient1, designColors.gradient2],
+                        borderColor: [designColors.primary, designColors.secondary],
+                        borderWidth: 3
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { 
-                            color: 'rgba(78, 205, 196, 0.2)',
-                            lineWidth: 1
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { ...animationConfig, animateRotate: true, animateScale: true },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { padding: 15, color: designColors.white, font: { size: 14, weight: 'bold' } }
                         },
-                        ticks: { 
-                            color: designColors.white, 
+                        datalabels: {
+                            display: true,
+                            color: '#FFFFFF',
                             font: { size: 16, weight: 'bold' },
-                            callback: function(value) {
-                                return value + '억';
-                            }
-                        }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { 
-                            color: designColors.white, 
-                            font: { size: 17, weight: 'bold' }
-                        }
-                    }
-                }
-            }
-        });
-        
-        const fieldCtx = document.getElementById('fieldChart').getContext('2d');
-        new Chart(fieldCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Greenbio (198과제)', 'Foodtech (25과제)'],
-                datasets: [{
-                    data: [198, 25],
-                    backgroundColor: [designColors.gradient1, designColors.gradient2],
-                    borderColor: [designColors.primary, designColors.secondary],
-                    borderWidth: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: {
-                    ...animationConfig,
-                    animateRotate: true,
-                    animateScale: true
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 15,
-                            color: designColors.white,
-                            font: { size: 14, weight: 'bold' }
-                        }
-                    },
-                    datalabels: {
-                        display: true,
-                        color: '#FFFFFF',
-                        font: {
-                            size: 16,
-                            weight: 'bold'
-                        },
-                        formatter: function(value, context) {
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = Math.round((value / total) * 100);
-                            return percentage + '%';
-                        },
-                        anchor: 'center',
-                        align: 'center'
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(47, 27, 77, 0.95)',
-                        titleColor: designColors.primary,
-                        bodyColor: designColors.white,
-                        borderColor: designColors.primary,
-                        borderWidth: 2,
-                        titleFont: { size: 18, weight: 'bold' },
-                        bodyFont: { size: 16, weight: 'bold' },
-                        callbacks: {
-                            label: function(context) {
+                            formatter: (value, context) => {
                                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = Math.round((context.parsed / total) * 100);
-                                return context.label + ': ' + percentage + '%';
+                                return Math.round((value / total) * 100) + '%';
+                            },
+                            anchor: 'center',
+                            align: 'center'
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(47, 27, 77, 0.95)',
+                            titleColor: designColors.primary,
+                            bodyColor: designColors.white,
+                            borderColor: designColors.primary,
+                            borderWidth: 2,
+                            titleFont: { size: 18, weight: 'bold' },
+                            bodyFont: { size: 16, weight: 'bold' },
+                            callbacks: {
+                                label: ctx => {
+                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    return ctx.label + ': ' + Math.round((ctx.parsed / total) * 100) + '%';
+                                }
                             }
                         }
-                    }
-                },
-                cutout: '60%'
-            }
-        });
-        
-        const projectBudgetCtx = document.getElementById('projectBudgetChart').getContext('2d');
-        new Chart(projectBudgetCtx, {
-            type: 'bar',
-            data: {
-                labels: ['농업정책지원', '차세대농작물신육종', '공공성확보육종', 'K-농식품자원', '농산부산물Eco', '농생명마이크로바이옴'],
-                datasets: [{
-                    data: [104.2, 70.1, 69.8, 64.3, 50, 40],
-                    backgroundColor: [
-                        designColors.gradient1,
-                        designColors.gradient6,
-                        designColors.gradient2,
-                        designColors.gradient3,
-                        designColors.gradient4,
-                        designColors.gradient5
-                    ],
-                    borderColor: [
-                        designColors.primary,
-                        '#2ECC71',
-                        designColors.secondary,
-                        designColors.accent,
-                        designColors.orange,
-                        designColors.yellow
-                    ],
-                    borderWidth: 2,
-                    borderRadius: 6
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: animationConfig,
-                plugins: {
-                    legend: { display: false },
-                    datalabels: {
-                        display: true,
-                        color: '#FFFFFF',
-                        font: {
-                            size: 14,
-                            weight: 'bold'
-                        },
-                        formatter: function(value) {
-                            return value + '억';
-                        },
-                        anchor: 'center',
-                        align: 'center'
                     },
-                    tooltip: {
-                        backgroundColor: 'rgba(47, 27, 77, 0.95)',
-                        titleColor: designColors.primary,
-                        bodyColor: designColors.white,
-                        borderColor: designColors.primary,
+                    cutout: '60%'
+                }
+            });
+
+            const projectBudgetCtx = document.getElementById('projectBudgetChart').getContext('2d');
+            const bgColors = [
+                designColors.gradient1, designColors.gradient6, designColors.gradient2,
+                designColors.gradient3, designColors.gradient4, designColors.gradient5
+            ];
+            const bdColors = [
+                designColors.primary, '#2ECC71', designColors.secondary,
+                designColors.accent, designColors.orange, designColors.yellow
+            ];
+            chartInstances.projectBudget = new Chart(projectBudgetCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.projectBudgets.map(d => d.label),
+                    datasets: [{
+                        data: data.projectBudgets.map(d => d.value),
+                        backgroundColor: bgColors.slice(0, data.projectBudgets.length),
+                        borderColor: bdColors.slice(0, data.projectBudgets.length),
                         borderWidth: 2,
-                        titleFont: { size: 16, weight: 'bold' },
-                        bodyFont: { size: 14, weight: 'bold' },
-                        callbacks: {
-                            label: function(context) {
-                                return context.parsed.x + '억원';
-                            }
-                        }
-                    }
+                        borderRadius: 6
+                    }]
                 },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        grid: { 
-                            color: 'rgba(255, 107, 157, 0.2)',
-                            lineWidth: 1
-                        },
-                        ticks: { 
-                            color: designColors.white, 
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: animationConfig,
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            display: true,
+                            color: '#FFFFFF',
                             font: { size: 14, weight: 'bold' },
-                            callback: function(value) {
-                                return value + '억';
-                            }
+                            formatter: value => value + '억',
+                            anchor: 'center',
+                            align: 'center'
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(47, 27, 77, 0.95)',
+                            titleColor: designColors.primary,
+                            bodyColor: designColors.white,
+                            borderColor: designColors.primary,
+                            borderWidth: 2,
+                            titleFont: { size: 16, weight: 'bold' },
+                            bodyFont: { size: 14, weight: 'bold' },
+                            callbacks: { label: ctx => ctx.parsed.x + '억원' }
                         }
                     },
-                    y: {
-                        grid: { display: false },
-                        ticks: { 
-                            color: designColors.white, 
-                            font: { size: 12, weight: 'bold' }
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 107, 157, 0.2)', lineWidth: 1 },
+                            ticks: { color: designColors.white, font: { size: 14, weight: 'bold' }, callback: v => v + '억' }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: designColors.white, font: { size: 12, weight: 'bold' } }
                         }
                     }
                 }
-            }
-        });
-        
+            });
+        }
+
         function animateCounters() {
             const counters = document.querySelectorAll('.metric-value');
             counters.forEach((counter, index) => {
                 const target = parseFloat(counter.getAttribute('data-target'));
                 let current = 0;
                 const increment = target / 100;
-                
                 setTimeout(() => {
                     const timer = setInterval(() => {
                         current += increment;
@@ -823,36 +813,59 @@
                             current = target;
                             clearInterval(timer);
                         }
-                        // 소수점이 있는 값은 항상 소수점 표시
-                        if (target % 1 !== 0) {
-                            counter.textContent = current.toFixed(1);
-                        } else {
-                            counter.textContent = Math.floor(current);
-                        }
+                        counter.textContent = (target % 1 !== 0) ? current.toFixed(1) : Math.floor(current);
                     }, 20);
                 }, index * 400);
             });
         }
-        
-        document.querySelectorAll('.metric-card, .chart-card, .detail-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px) scale(1.02)';
+
+        function bindCardHover() {
+            document.querySelectorAll('.metric-card, .chart-card, .detail-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px) scale(1.02)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
             });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-        
+        }
+
+        async function loadDashboardData() {
+            try {
+                const res = await fetch(DATA_FILE);
+                if (!res.ok) throw new Error(`데이터 파일 로드 실패: ${res.status}`);
+                const data = await res.json();
+
+                // 제목 업데이트
+                document.querySelector('.header h1').textContent = data.title;
+                document.title = data.title;
+
+                // 상단 지표 카드
+                renderMetrics(data.metrics);
+
+                // 상세 카드 렌더링
+                renderFoodtechCard(data);
+                renderGreenbioCard(data);
+                renderEndStatusCard(data.projectEndStatus);
+
+                // 차트 렌더링
+                renderCharts(data);
+
+                // 애니메이션 및 이벤트 바인딩
+                setTimeout(animateCounters, 1200);
+                bindCardHover();
+
+                console.log(`✅ 데이터 로드 완료: ${DATA_FILE}`);
+            } catch (e) {
+                console.error('데이터 로드 오류:', e);
+            }
+        }
+
         // 20초마다 자동 새로고침
         setInterval(() => {
             location.reload();
         }, 100000);
-        
-        window.addEventListener('load', () => {
-            setTimeout(animateCounters, 1200);
-        });
-        
+
         setInterval(() => {
             const cards = document.querySelectorAll('.metric-card');
             cards.forEach((card, index) => {
@@ -864,42 +877,37 @@
                 }, index * 300);
             });
         }, 8000);
-        
+
         setInterval(() => {
-            Chart.getChart('budgetChart').update('active');
-            Chart.getChart('fieldChart').update('active');
-            Chart.getChart('projectBudgetChart').update('active');
+            Object.values(chartInstances).forEach(c => c.update('active'));
         }, 12000);
-        
+
         // TV 리모컨 대응 (webOS용)
         document.addEventListener('keydown', function(event) {
             switch(event.keyCode) {
-                case 13: // OK 버튼
+                case 13:
                     location.reload();
                     break;
-                case 412: // Red 버튼
+                case 412:
                     if (!document.fullscreenElement) {
                         document.documentElement.requestFullscreen();
                     } else {
                         document.exitFullscreen();
                     }
                     break;
-                case 413: // Green 버튼
-                    // 데이터 새로고침
-                    Chart.helpers.each(Chart.instances, function(instance) {
-                        instance.update('active');
-                    });
+                case 413:
+                    Object.values(chartInstances).forEach(c => c.update('active'));
                     animateCounters();
                     break;
-                case 461: // Back 버튼
-                    if (window.webOS) {
-                        webOS.platformBack();
-                    }
+                case 461:
+                    if (window.webOS) webOS.platformBack();
                     break;
             }
         });
-        
-        console.log('🚀 바이오푸드테크팀 대시보드 로드 완료 - 5초 자동 새로고침 적용');
+
+        window.addEventListener('load', loadDashboardData);
+
+        console.log('🚀 바이오푸드테크팀 대시보드 초기화 - 데이터 폴더: ' + DATA_FOLDER);
     </script>
 </body>
 </html>

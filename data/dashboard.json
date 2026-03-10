@@ -1,0 +1,83 @@
+{
+  "title": "2025 바이오푸드테크팀 사업 현황",
+  "metrics": [
+    { "label": "총 연구비", "value": 398.8, "unit": "억원" },
+    { "label": "총 과제수", "value": 223, "unit": "개 과제" },
+    { "label": "세부사업", "value": 6, "unit": "개 사업" },
+    { "label": "내역사업", "value": 16, "unit": "개 사업" }
+  ],
+  "budgetByField": [
+    { "label": "Greenbio", "value": 284.1 },
+    { "label": "Foodtech", "value": 114.3 }
+  ],
+  "tasksByField": [
+    { "label": "Greenbio", "value": 198 },
+    { "label": "Foodtech", "value": 25 }
+  ],
+  "projectBudgets": [
+    { "label": "농업정책지원", "value": 104.2 },
+    { "label": "차세대농작물신육종", "value": 70.1 },
+    { "label": "공공성확보육종", "value": 69.8 },
+    { "label": "K-농식품자원", "value": 64.3 },
+    { "label": "농산부산물Eco", "value": 50 },
+    { "label": "농생명마이크로바이옴", "value": 40 }
+  ],
+  "foodtechProjects": [
+    {
+      "name": "K-농식품자원기능성성분활용기반고도화",
+      "badge": "foodtech",
+      "badgeText": "푸드팀",
+      "tasks": 19,
+      "budget": "64.3억"
+    },
+    {
+      "name": "농산부산물Eco순환기술개발",
+      "badge": "foodtech",
+      "badgeText": "푸드팀",
+      "tasks": 6,
+      "budget": "50억"
+    }
+  ],
+  "foodtechTotal": { "tasks": 25, "budget": "114.3억" },
+  "greenbioProjects": [
+    {
+      "name": "농업정책지원기술개발사업",
+      "badges": [
+        { "type": "greenbio", "text": "생명팀" },
+        { "type": "foodtech", "text": "푸드팀" }
+      ],
+      "tasks": 135,
+      "budget": "104.2억"
+    },
+    {
+      "name": "차세대농작물신육종기술개발",
+      "badges": [{ "type": "greenbio", "text": "생명팀" }],
+      "tasks": 34,
+      "budget": "70.1억"
+    },
+    {
+      "name": "공공성확보위한국가기반육종플랫폼개발",
+      "badges": [{ "type": "greenbio", "text": "생명팀" }],
+      "tasks": 22,
+      "budget": "69.8억"
+    },
+    {
+      "name": "농생명마이크로바이옴혁신기술기반구축",
+      "badges": [{ "type": "foodtech", "text": "푸드팀" }],
+      "tasks": 7,
+      "budget": "40억"
+    }
+  ],
+  "greenbioTotal": { "tasks": 198, "budget": "284.1억" },
+  "projectEndStatus": [
+    { "year": "2025년", "name": "(농업정책지원_내역)곤충기술경쟁력" },
+    { "year": "2025년", "name": "(농업정책지원_내역)생분해성플라스틱품질향상과실증연구" },
+    { "year": "2025년", "name": "(농업정책지원_내역)LMO환경위해성평가기관운영" },
+    { "year": "2026년", "name": "K-농식품자원기능성성분활용기반고도화" },
+    { "year": "2026년", "name": "차세대농작물신육종기술개발" },
+    { "year": "2027년", "name": "(농업정책지원_내역)꿀벌강건성연구" },
+    { "year": "2027년", "name": "공공성확보를위한국가기반육종플랫폼개발" },
+    { "year": "2028년", "name": "농생명마이크로바이옴혁신기술기반구축" },
+    { "year": "2029년", "name": "농산부산물Eco순환기술개발" }
+  ]
+}
