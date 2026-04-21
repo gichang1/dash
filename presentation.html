@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>농촌진흥청 푸드테크 R&D</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bk:#141413; --tc:#c96442; --co:#d97757; --pg:#f5f4ed; --iv:#faf9f5;
+  --wh:#ffffff; --ws:#e8e6dc; --ds:#30302e; --cw:#4d4c48; --og:#5e5d59;
+  --sg:#87867f; --sv:#b0aea5; --bc:#f0eee6; --bw:#e8e6dc; --mg:#4a6741;
+  --fs:'Noto Serif KR',Georgia,serif; --fn:'Noto Sans KR',Arial,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--fn);}
+#deck{width:100vw;height:100vh;position:relative;}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .35s ease;display:flex;flex-direction:column;}
+.slide.active{opacity:1;pointer-events:all;}
+.dk{background:var(--bk);color:var(--iv);}
+.lt{background:var(--pg);color:var(--bk);}
+
+/* Header */
+.sh{padding:20px 56px;display:flex;align-items:center;gap:18px;flex-shrink:0;}
+.dk .sh{border-bottom:1px solid var(--ds);}
+.lt .sh{border-bottom:1px solid var(--bw);background:var(--iv);}
+.cm{font-family:var(--fs);font-size:36px;font-weight:500;color:var(--tc);line-height:1;flex-shrink:0;}
+.hr{width:1px;height:40px;flex-shrink:0;}
+.dk .hr{background:var(--ds)}.lt .hr{background:var(--bw);}
+.ht{flex:1;}
+.he{font-size:10px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;color:var(--sg);}
+.hn{font-family:var(--fs);font-size:22px;font-weight:500;line-height:1.25;}
+.dk .hn{color:var(--iv)}.lt .hn{color:var(--bk);}
+
+/* Body */
+.sb{flex:1;padding:22px 56px;overflow:hidden;display:flex;flex-direction:column;}
+
+/* Footer */
+.sf{padding:10px 56px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;font-size:11px;border-top:1px solid;}
+.dk .sf{border-color:var(--ds);color:var(--sg);}
+.lt .sf{border-color:var(--bc);color:var(--sg);}
+
+/* Nav */
+.nb{position:fixed;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;border:none;cursor:pointer;font-size:20px;z-index:100;display:flex;align-items:center;justify-content:center;opacity:.5;transition:opacity .2s;}
+.nb:hover{opacity:1;}
+#pb{left:8px;background:rgba(255,255,255,.1);color:#fff;}
+#nb{right:8px;background:rgba(255,255,255,.1);color:#fff;}
+
+/* Stats */
+.sg3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px;}
+.sg4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.sc{padding:18px 20px;border-radius:12px;}
+.dk .sc{background:var(--ds);border:1px solid #3a3a38;}
+.lt .sc{background:var(--iv);border:1px solid var(--bc);box-shadow:rgba(0,0,0,.04) 0 4px 16px;}
+.sv2{font-family:var(--fs);font-size:34px;font-weight:500;color:var(--tc);line-height:1.1;}
+.sl{font-size:12.5px;margin-top:5px;line-height:1.45;}
+.dk .sl{color:var(--sv)}.lt .sl{color:var(--og);}
+.sd{font-size:11.5px;font-weight:600;margin-top:3px;}
+.up{color:var(--tc)}.nw{color:#5a9a5a;}
+
+/* Tables */
+.dt{width:100%;border-collapse:collapse;font-size:13px;}
+.dt th{padding:9px 13px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.3px;}
+.dk .dt th{background:var(--ds);color:var(--sv);border-bottom:1px solid #3a3a38;}
+.lt .dt th{background:var(--ws);color:var(--cw);border-bottom:1px solid var(--bw);}
+.dt td{padding:8px 13px;border-bottom:1px solid;vertical-align:top;line-height:1.5;}
+.dk .dt td{border-color:#282826;color:var(--sv);}
+.lt .dt td{border-color:var(--bc);color:var(--cw);}
+.dk .dt td:first-child{color:var(--iv);}
+.lt .dt td:first-child{color:var(--bk);font-weight:500;}
+
+/* Cards */
+.card{border-radius:12px;padding:18px;}
+.dk .card{background:var(--ds);border:1px solid #3a3a38;}
+.lt .card{background:var(--iv);border:1px solid var(--bc);box-shadow:rgba(0,0,0,.04) 0 4px 16px;}
+.ct{font-family:var(--fs);font-size:15px;font-weight:500;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid;}
+.dk .ct{color:var(--iv);border-color:#3a3a38;}.lt .ct{color:var(--bk);border-color:var(--bw);}
+
+/* Bullets */
+.bl{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.bl li{font-size:12.5px;line-height:1.5;padding-left:13px;position:relative;}
+.bl li::before{content:'–';position:absolute;left:0;color:var(--tc);}
+.dk .bl li{color:var(--sv)}.lt .bl li{color:var(--og);}
+
+/* Note */
+.nt{margin-top:9px;padding:7px 11px;border-radius:7px;border-left:2px solid var(--tc);font-size:11.5px;line-height:1.5;}
+.dk .nt{background:rgba(201,100,66,.08);color:var(--sg);}
+.lt .nt{background:var(--pg);color:var(--sg);}
+.nt strong{color:var(--tc);}
+
+/* Pill */
+.pl{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;}
+.pt{background:rgba(201,100,66,.15);color:var(--tc);}
+.pg2{background:rgba(74,103,65,.15);color:var(--mg);}
+.pw{background:var(--ws);color:var(--cw);}
+.dk .pw{background:var(--ds);color:var(--sv);}
+
+/* Pipeline */
+.pipe{display:flex;align-items:center;gap:0;margin:12px 0;}
+.ps{flex:1;padding:9px 12px;border-radius:8px;font-size:12px;text-align:center;font-weight:500;}
+.dk .ps{background:var(--ds);color:var(--iv);}
+.lt .ps{background:var(--ws);color:var(--cw);}
+.pa{padding:0 6px;font-size:15px;color:var(--tc);flex-shrink:0;}
+
+/* 2-col */
+.tc2{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;}
+/* 3-col */
+.tc3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex:1;}
+/* 5-col */
+.tc5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;flex:1;}
+
+/* Domain card */
+.dc{padding:18px 16px;border-radius:12px;display:flex;flex-direction:column;gap:7px;}
+.dk .dc{background:var(--ds);border:1px solid #3a3a38;}
+.dn{font-family:var(--fs);font-size:26px;font-weight:500;color:var(--tc);}
+.dnm{font-family:var(--fs);font-size:14px;font-weight:500;line-height:1.3;}
+.dk .dnm{color:var(--iv);}
+.dd{font-size:11.5px;line-height:1.5;flex:1;}
+.dk .dd{color:var(--sv);}
+.dr{font-size:11px;padding:3px 8px;border-radius:6px;border:1px solid rgba(201,100,66,.3);color:var(--tc);background:rgba(201,100,66,.08);}
+
+/* Task card */
+.tnum{width:26px;height:26px;border-radius:50%;background:var(--tc);color:var(--iv);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;margin-bottom:10px;flex-shrink:0;}
+.ttl{font-family:var(--fs);font-size:14px;font-weight:500;margin-bottom:10px;line-height:1.3;}
+.dk .ttl{color:var(--iv)}.lt .ttl{color:var(--bk);}
+
+/* Overview table */
+.ov{width:100%;border-collapse:collapse;font-size:12.5px;}
+.ov tr{border-bottom:1px solid;}
+.dk .ov tr{border-color:#282826;}.lt .ov tr{border-color:var(--bc);}
+.ov td{padding:7px 11px;vertical-align:top;line-height:1.5;}
+.ov td:first-child{font-size:10.5px;font-weight:600;letter-spacing:.3px;width:100px;color:var(--tc);}
+.dk .ov td:last-child{color:var(--sv)}.lt .ov td:last-child{color:var(--cw);}
+
+/* Section label */
+.slb{display:inline-flex;align-items:center;padding:3px 10px;border-radius:7px;background:var(--tc);color:var(--iv);font-size:11px;font-weight:600;margin-bottom:12px;width:fit-content;}
+
+/* Sub heading */
+.sh2{font-family:var(--fs);font-size:16px;font-weight:500;margin-bottom:8px;}
+.dk .sh2{color:var(--iv)}.lt .sh2{color:var(--bk);}
+
+em{font-style:normal;color:var(--tc);font-weight:500;}
+</style>
+</head>
+<body>
+<div id="deck">
+<!-- SLIDE 0: TITLE -->
+<div class="slide dk active" id="s0">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 72px;">
+    <div style="font-size:11px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:var(--sg);margin-bottom:20px;">농촌진흥청 · 연구정책국 바이오푸드테크팀</div>
+    <div style="display:flex;align-items:flex-start;gap:24px;">
+      <div style="width:4px;height:72px;background:var(--tc);border-radius:2px;flex-shrink:0;margin-top:6px;"></div>
+      <div>
+        <h1 style="font-family:var(--fs);font-size:50px;font-weight:500;color:var(--iv);line-height:1.15;margin-bottom:16px;">푸드테크 R&D<br>추진 현황 및 계획</h1>
+        <p style="font-size:17px;color:var(--sv);margin-bottom:32px;">바이오협회 발표용 보고서</p>
+        <div style="display:flex;gap:32px;">
+          <div><div style="font-size:10px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--sg);margin-bottom:3px;">발표일</div><div style="font-size:14px;color:var(--sv);font-weight:500;">2026. 4.</div></div>
+          <div><div style="font-size:10px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--sg);margin-bottom:3px;">발표팀</div><div style="font-size:14px;color:var(--sv);font-weight:500;">연구정책국 바이오푸드테크팀</div></div>
+          <div><div style="font-size:10px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;color:var(--sg);margin-bottom:3px;">발표시간</div><div style="font-size:14px;color:var(--sv);font-weight:500;">약 20분</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn0"></span><span>1 / 17</span></div>
+</div>
+
+<!-- SLIDE 1: AGENDA -->
+<div class="slide lt" id="s1">
+  <div class="sh"><span class="cm" style="font-size:22px;color:var(--og);">목차</span><div class="hr"></div><div class="ht"><div class="he">Table of Contents</div><h2 class="hn">발표 구성 — 약 20분</h2></div></div>
+  <div class="sb">
+    <table class="dt">
+      <thead><tr><th style="width:50px;">장</th><th>구성</th><th>핵심 메시지</th><th style="width:55px;text-align:right;">시간</th></tr></thead>
+      <tbody>
+        <tr><td>Ⅰ</td><td>예산 현황 (2025→2026)</td><td>푸드테크 예산 <em>+79.8%</em> 증가</td><td style="text-align:right;">3분</td></tr>
+        <tr><td>Ⅱ</td><td>5대 분야 R&D 개요</td><td>공백 없는 포트폴리오 구성</td><td style="text-align:right;">1.5분</td></tr>
+        <tr><td>Ⅲ</td><td>식품성분DB 고도화</td><td>3,330점 · 29만건 · 국제허브</td><td style="text-align:right;">2분</td></tr>
+        <tr><td>Ⅳ</td><td>기능성소재 규명·소재화</td><td>6개 소재 개별인정 파이프라인</td><td style="text-align:right;">3분</td></tr>
+        <tr><td>Ⅴ</td><td>발효미생물 자원화·산업화</td><td>200주 확보 · 제형화 완료</td><td style="text-align:right;">2분</td></tr>
+        <tr><td>Ⅵ</td><td>농산부산물 업사이클링</td><td>3.3배 알부틴 · PHA 미생물</td><td style="text-align:right;">2분</td></tr>
+        <tr><td>Ⅶ</td><td>대체단백 원료화</td><td>78억 신규 · 안심애 품종 개발</td><td style="text-align:right;">2분</td></tr>
+        <tr><td>Ⅷ</td><td>신규계획: 맞춤영양 ('27~)</td><td>508억 · 5년 · AI 맞춤 인프라</td><td style="text-align:right;">2분</td></tr>
+        <tr><td>Ⅸ</td><td>신규계획: K-Science 3사업</td><td>K-Sool · K-Seed Oil · 치유음식</td><td style="text-align:right;">2.5분</td></tr>
+        <tr><td>Ⅹ</td><td>마무리 및 협력 요청</td><td>포트폴리오 총정리 · 협력 요청</td><td style="text-align:right;">1분</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn1"></span><span>2 / 17</span></div>
+</div>
+
+<!-- SLIDE 2: 예산 총괄 (DARK) -->
+<div class="slide dk" id="s2">
+  <div class="sh"><span class="cm">Ⅰ</span><div class="hr"></div><div class="ht"><div class="he">Budget Overview 2025→2026</div><h2 class="hn">R&D 예산 현황 — 3대 핵심 지표</h2></div></div>
+  <div class="sb">
+    <div class="sg3">
+      <div class="sc"><div class="sv2">8,125억</div><div class="sl">R&D 예산 총계 ('26년)</div><div class="sd up">▲ +554억 (+7.3%)</div></div>
+      <div class="sc"><div class="sv2">6,608억</div><div class="sl">R&D 사업비 계 ('26년)</div><div class="sd up">▲ +511억 (+8.4%)</div></div>
+      <div class="sc"><div class="sv2">205억</div><div class="sl">푸드테크 분야 합계 ('26년)</div><div class="sd up">▲ +91억 (+79.8%)</div></div>
+    </div>
+    <div style="padding:14px 18px;border-radius:10px;background:rgba(201,100,66,.1);border:1px solid rgba(201,100,66,.2);margin-bottom:16px;">
+      <p style="font-size:13px;color:var(--sv);line-height:1.6;">푸드테크 3개 사업: <em>K-농식품기능성성분(60.5억)</em> + <em>대체단백특화(78.0억)</em> + <em>농산부산물Eco순환(66.7억)</em></p>
+    </div>
+    <div style="background:var(--ds);border-radius:12px;padding:18px 20px;">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.3px;color:var(--sg);margin-bottom:12px;">농진청 전체 대비 푸드테크 비중</div>
+      <table class="dt">
+        <thead><tr><th>구분</th><th>'25년</th><th>'26년</th><th>증감</th></tr></thead>
+        <tbody>
+          <tr><td>R&D 예산 총계</td><td>7,571억</td><td>8,125억</td><td><span class="up">▲ +7.3%</span></td></tr>
+          <tr><td>R&D 사업비 계</td><td>6,097억</td><td>6,608억</td><td><span class="up">▲ +8.4%</span></td></tr>
+          <tr><td>주요 R&D 사업비</td><td>5,456억</td><td>6,077억</td><td><span class="up">▲ +11.4%</span></td></tr>
+          <tr><td style="color:var(--tc);">푸드테크 3개 사업</td><td>114억</td><td>205억</td><td><span class="up" style="font-weight:700;">▲ +79.8%</span></td></tr>
+        </tbody>
+      </table>
+      <div class="nt" style="margin-top:10px;">증가율은 전체 평균(7.3%)의 <strong>11배 수준</strong> — 집중 투자 중</div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn2"></span><span>3 / 17</span></div>
+</div>
+
+<!-- SLIDE 3: 예산 세부 (LIGHT) -->
+<div class="slide lt" id="s3">
+  <div class="sh"><span class="cm">Ⅰ</span><div class="hr"></div><div class="ht"><div class="he">Budget Detail</div><h2 class="hn">푸드테크 분야 세부 예산 비교</h2></div></div>
+  <div class="sb">
+    <div class="sg3" style="margin-bottom:20px;">
+      <div class="sc"><div style="font-size:11px;font-weight:600;color:var(--sg);margin-bottom:6px;">K-농식품자원 기능성성분 고도화</div><div class="sv2">60.5억</div><div class="sl">사업 정상 추진</div><div class="sd" style="color:var(--sg);">▼ 3.8억 감액</div></div>
+      <div class="sc" style="border:2px solid var(--tc);"><div style="font-size:11px;font-weight:600;color:var(--tc);margin-bottom:6px;">★ 대체단백 특화시장 원료화</div><div class="sv2">78.0억</div><div class="sl">'26년 신규 편성</div><div class="sd nw">★ 최대 신규 편성</div></div>
+      <div class="sc"><div style="font-size:11px;font-weight:600;color:var(--sg);margin-bottom:6px;">농산부산물 Eco순환기술 개발</div><div class="sv2">66.7억</div><div class="sl">전년 대비 +33%</div><div class="sd up">▲ +16.7억</div></div>
+    </div>
+    <table class="dt">
+      <thead><tr><th>사업명</th><th>'25년</th><th>'26년</th><th>증감</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>K-농식품자원 기능성성분 고도화</td><td>64.3억</td><td>60.5억</td><td style="color:var(--sg);">▼ 3.8억</td><td>사업 정상 추진</td></tr>
+        <tr><td style="color:var(--tc);font-weight:600;">대체단백 특화시장 원료화</td><td>신규</td><td style="color:var(--tc);font-weight:700;">78.0억</td><td class="sd nw">★ +78억</td><td>'26년 신규 편성</td></tr>
+        <tr><td>농산부산물 Eco순환기술 개발</td><td>50.0억</td><td>66.7억</td><td class="sd up">▲ +16.7억</td><td>+33% 증가</td></tr>
+        <tr style="background:rgba(201,100,66,.06);"><td style="font-weight:700;">합 계</td><td>114.3억</td><td style="color:var(--tc);font-weight:700;">205.2억</td><td class="sd up" style="font-weight:700;">▲ +90.9억</td><td>전년 대비 <em>+79.5%</em></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn3"></span><span>4 / 17</span></div>
+</div>
+<!-- SLIDE 4: 5대 분야 (DARK) -->
+<div class="slide dk" id="s4">
+  <div class="sh"><span class="cm">Ⅱ</span><div class="hr"></div><div class="ht"><div class="he">Five Core R&D Domains</div><h2 class="hn">푸드테크 R&D — 5대 핵심 분야</h2></div></div>
+  <div class="sb">
+    <div style="padding:12px 16px;border-radius:9px;background:rgba(201,100,66,.1);border:1px solid rgba(201,100,66,.2);margin-bottom:16px;">
+      <p style="font-size:13px;color:var(--sv);line-height:1.6;">데이터 구축부터 소재화·발효·업사이클·대체식품까지 — <em>공백 없는 통합 포트폴리오</em>로 농식품 산업 경쟁력 강화</p>
+    </div>
+    <div class="tc5">
+      <div class="dc"><div class="dn">①</div><div class="dnm">식품성분DB</div><div class="dd">국가 표준 데이터 인프라 구축 · 기능성 분석 · 국제 협력</div><div class="dr">3,330점 · 29만건</div></div>
+      <div class="dc"><div class="dn">②</div><div class="dnm">기능성소재</div><div class="dd">AI 기반 기능성 예측 · 6개 소재 개별인정 파이프라인</div><div class="dr">개별인정 6개 추진</div></div>
+      <div class="dc"><div class="dn">③</div><div class="dnm">발효미생물</div><div class="dd">토착 종균 발굴 · 오믹스DB · 제형화 산업화</div><div class="dr">200주 확보</div></div>
+      <div class="dc"><div class="dn">④</div><div class="dnm">농산부산물</div><div class="dd">23개 품목 실태조사 · 화장품·식품·바이오소재 전환</div><div class="dr">알부틴 3.3배</div></div>
+      <div class="dc"><div class="dn">⑤</div><div class="dnm">대체단백</div><div class="dd">식용곤충·식물성 단백질 원료화 · 78억 신규 편성</div><div class="dr">78억 신규</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:0;margin-top:14px;">
+      <div class="ps dk" style="background:rgba(201,100,66,.15);color:var(--tc);font-weight:600;font-size:11.5px;">데이터 인프라</div>
+      <div class="pa">▶</div><div class="ps">소재화·기능성</div>
+      <div class="pa">▶</div><div class="ps">발효 산업화</div>
+      <div class="pa">▶</div><div class="ps">자원 순환</div>
+      <div class="pa">▶</div><div class="ps" style="background:rgba(201,100,66,.15);color:var(--tc);">대체식품</div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn4"></span><span>5 / 17</span></div>
+</div>
+
+<!-- SLIDE 5: 식품성분DB (LIGHT) -->
+<div class="slide lt" id="s5">
+  <div class="sh"><span class="cm">Ⅲ</span><div class="hr"></div><div class="ht"><div class="he">Food Composition Database</div><h2 class="hn">국가표준 식품성분DB 고도화</h2></div></div>
+  <div class="sb">
+    <div class="sg3" style="margin-bottom:16px;">
+      <div class="sc"><div class="sv2">3,330점</div><div class="sl">수록 식품 수 (누적)</div></div>
+      <div class="sc"><div class="sv2">29만 건</div><div class="sl">구축 데이터 (탄단지·무기질·아미노산 등)</div></div>
+      <div class="sc"><div class="sv2">통과</div><div class="sl">국제 숙련도 평가 (영국 등 국제기관)</div></div>
+    </div>
+    <div class="tc2">
+      <div>
+        <div class="slb">▶ 영양성분 데이터 구축 및 품질관리</div>
+        <ul class="bl">
+          <li>국내 유통 식품 영양성분 지속 분석·축적 (탄단지·무기질·아미노산·비타민·콜레스테롤)</li>
+          <li>웹 기반 데이터 관리시스템 고도화</li>
+          <li>국민 공개 서비스 「농식품올바로」 운영</li>
+          <li>과일·채소 품종별 감각특성 평가법 표준화</li>
+          <li>균형식단 구성용 레시피 데이터 연계</li>
+        </ul>
+      </div>
+      <div>
+        <div class="slb">▶ 기능성분 DB 및 국제 협력</div>
+        <table class="ov">
+          <tr><td>분석 대상</td><td>안토시아닌·카로티노이드·파이토스테롤·리그난 등 8종</td></tr>
+          <tr><td>분석 기준</td><td>품종·부위·재배지역별 체계적 분석·목록화</td></tr>
+          <tr><td>국제 협력</td><td><em>PTFI 국가연구실 허브</em> 공식 지정</td></tr>
+          <tr><td>표준화</td><td>온톨로지 기반 한국형 식품 분류체계 확립</td></tr>
+          <tr><td>국제표준</td><td>국제표준 식별체계 적용으로 데이터 표준화</td></tr>
+        </table>
+        <div class="nt"><strong>* PTFI</strong> — 전 세계 식품의 영양·기능성 데이터를 통합·공유하는 국제 협력체</div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn5"></span><span>6 / 17</span></div>
+</div>
+
+<!-- SLIDE 6: 기능성소재 (DARK) -->
+<div class="slide dk" id="s6">
+  <div class="sh"><span class="cm">Ⅳ</span><div class="hr"></div><div class="ht"><div class="he">Functional Ingredients Pipeline</div><h2 class="hn">국산 농산물 기능성 규명 및 소재화</h2></div></div>
+  <div class="sb">
+    <div class="slb" style="margin-bottom:10px;">▶ 개별인정형 원료화 파이프라인</div>
+    <div class="pipe" style="margin-bottom:14px;">
+      <div class="ps">① 기능성 탐색·예측</div><div class="pa">▶</div>
+      <div class="ps">② 전임상 효능검증</div><div class="pa">▶</div>
+      <div class="ps">③ 임상시험</div><div class="pa">▶</div>
+      <div class="ps" style="background:rgba(201,100,66,.2);color:var(--tc);">④ 개별인정 신청</div>
+    </div>
+    <table class="dt" style="margin-bottom:14px;">
+      <thead><tr><th>소재</th><th>기능성</th><th>현황</th></tr></thead>
+      <tbody>
+        <tr><td>백삼</td><td>긴장완화·혈행개선·면역증진</td><td><span class="pl pt">개별인정 신청 완료</span> 베트남·일본인 대상 임상 수행 중</td></tr>
+        <tr><td>홍잠</td><td>비알코올성 지방간 개선</td><td>기능성 구명 완료 → 임상 준비 중</td></tr>
+        <tr><td>꽃벵이</td><td>면역기능 개선</td><td>개별인정 신청 준비 중</td></tr>
+        <tr><td>식방풍·기린초</td><td>정신건강</td><td>전임상 완료 → '26년 임상 후 신청 예정</td></tr>
+        <tr><td>팥순</td><td>체지방 감소</td><td><span class="pl pt">세계 최초</span> 쿠메스테롤-3,9-디글루코사이드 발견</td></tr>
+        <tr><td>황기·진귤</td><td>인지능 개선</td><td>'26년 임상 완료 후 개별인정형 신청 예정</td></tr>
+      </tbody>
+    </table>
+    <div class="slb">▶ AI 기반 기능성 예측 시스템</div>
+    <ul class="bl">
+      <li>웹 기반 체계적문헌고찰 플랫폼 — 과학 논문 자동 수집·분석 → 유효 섭취량·효능 근거 도출</li>
+      <li>국내산 다소비 농산물 <em>150여 종</em> 기능성 관련 대사체 정보 데이터화</li>
+      <li>AI 분석 → 인지기능·면역·항염증 기능성 예측 시스템 구축</li>
+    </ul>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn6"></span><span>7 / 17</span></div>
+</div>
+<!-- SLIDE 7: 발효미생물 (LIGHT) -->
+<div class="slide lt" id="s7">
+  <div class="sh"><span class="cm">Ⅴ</span><div class="hr"></div><div class="ht"><div class="he">Fermentation Microorganism</div><h2 class="hn">전통 발효미생물 자원화 및 산업화</h2></div></div>
+  <div class="sb">
+    <div class="sg3" style="margin-bottom:16px;">
+      <div class="sc"><div class="sv2">270점</div><div class="sl">대사체 분석 완료 (전통발효식품)</div></div>
+      <div class="sc"><div class="sv2">120종↑</div><div class="sl">발효미생물 군집 분석 (주류·식초·장류·김치)</div></div>
+      <div class="sc"><div class="sv2">200주↑</div><div class="sl">우수 토착미생물 확보 · 종균 선발 완료</div></div>
+    </div>
+    <div class="tc2">
+      <div>
+        <div class="slb">▶ 발효식품 오믹스 통합DB 구축</div>
+        <ul class="bl">
+          <li>당류·유기산·아미노산·지방산·향미 성분 등 종합 정보</li>
+          <li>유전체·대사체 통합 오믹스 정보 관리시스템 개발</li>
+          <li>안전성·기능성 유전자 프로파일 축적</li>
+          <li>전국 권역별 시료 수집 — 지역 특성 반영</li>
+        </ul>
+      </div>
+      <div>
+        <div class="slb">▶ 우수 토착 종균 선발 및 제형화</div>
+        <table class="ov">
+          <tr><td>막걸리용</td><td>향미 증진 효모 선발 → 고상(분말)·액상 제형화 완료</td></tr>
+          <tr><td>제빵용</td><td>내산성·냉동내성 효모 선발 → 건강빵 적용 가능</td></tr>
+          <tr><td>김치·장류용</td><td>유산균·고초균 선발 → 프로바이오틱스 김치 종균</td></tr>
+          <tr><td>식초·장류 기업</td><td>고상·액상 제형 → 기업 적용 형태 산업화 완료</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn7"></span><span>8 / 17</span></div>
+</div>
+
+<!-- SLIDE 8: 농산부산물 (DARK) -->
+<div class="slide dk" id="s8">
+  <div class="sh"><span class="cm">Ⅵ</span><div class="hr"></div><div class="ht"><div class="he">Agricultural By-product Upcycling</div><h2 class="hn">농산부산물 고부가가치 자원화 (업사이클링)</h2></div></div>
+  <div class="sb">
+    <div class="sg3" style="margin-bottom:16px;">
+      <div class="sc"><div class="sv2">23개</div><div class="sl">실태조사 대상 품목 (벼·보리·콩 등)</div></div>
+      <div class="sc"><div class="sv2">3.3배</div><div class="sl">배착즙박 알부틴 함량 (수입산 대비)</div></div>
+      <div class="sc"><div class="sv2">3개 분야</div><div class="sl">업사이클링 활용 (화장품·식품·바이오소재)</div></div>
+    </div>
+    <div class="slb">▶ 실태조사 및 통합 DB 플랫폼</div>
+    <ul class="bl" style="margin-bottom:14px;">
+      <li>품목별 부산물 발생 정보공유 플랫폼 및 유통 현황 모니터링 앱 개발</li>
+      <li>미생물·잔류농약·중금속 등 품질·안전성 지표 분석법 확립</li>
+    </ul>
+    <div class="slb">▶ 부산물 고부가가치 소재화 성과</div>
+    <table class="dt">
+      <thead><tr><th>분야</th><th>주요 성과</th></tr></thead>
+      <tbody>
+        <tr><td>화장품</td><td>양파뿌리 추출물 활용 화장품 시제품 개발 및 뷰티엑스포 홍보</td></tr>
+        <tr><td>기능성 식품</td><td>배착즙박 농축액 알부틴 함량 수입산 대비 <em>3.3배</em> 확인 → 젤리스틱 개발</td></tr>
+        <tr><td>식품원료 등록</td><td>왕겨 한시적 식품원료 등록 기반 마련 (고문헌 식용근거·안전성 확보)</td></tr>
+        <tr><td>바이오소재</td><td>콩대·볏짚 전처리 기술 및 <em>PHA(바이오플라스틱 원료)</em> 생산 가능 미생물 확보</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn8"></span><span>9 / 17</span></div>
+</div>
+
+<!-- SLIDE 9: 대체단백 (LIGHT) -->
+<div class="slide lt" id="s9">
+  <div class="sh"><span class="cm">Ⅶ</span><div class="hr"></div><div class="ht"><div class="he">Alternative Protein</div><h2 class="hn">대체단백 원료화 — '26년 78억 신규 편성</h2></div></div>
+  <div class="sb">
+    <div class="tc2">
+      <div class="card">
+        <div class="ct">🪲 식용곤충 단백질 활용 산업화</div>
+        <ul class="bl">
+          <li>갈색거저리(고소애) 활용 대체육·고령친화식품 시제품 개발</li>
+          <li>소비자 맞춤형 제형화 (필름 등) 및 근개선 효능 적용</li>
+          <li>IoT·AI 기반 디지털 사육 관리 시스템 구축</li>
+          <li>자동 먹이급이 장치 개발 → 생산 효율화</li>
+          <li><em>「안심애(갈색거저리)」</em> 품종 개발 — 출하기간 연장·유충 무게 증가</li>
+        </ul>
+        <div class="nt"><strong>* 생산 효율화</strong> — 작업시간 단축, 노동력 감소, 거점단지 대량 생산시설 활용</div>
+      </div>
+      <div class="card">
+        <div class="ct">🌿 식물성 단백질 원료·기술 국산화</div>
+        <table class="ov">
+          <tr><td>품종 DB</td><td>식물성 단백질용 콩 품종 선발·특성 DB (40종 목표)</td></tr>
+          <tr><td>기술 국산화</td><td>추출·성형기술 국산화, 고단백 원료 생산기술 개발</td></tr>
+          <tr><td>품질 개선</td><td>미생물 발효 및 하이브리드 기술 접목 → 식감·풍미·영양소 향상</td></tr>
+          <tr><td>저감 기술</td><td>항영양소·알레르기·이취 저감 기술 개발</td></tr>
+          <tr><td>배양육 연계</td><td>세포 지지체를 식물 식이섬유로 대체 → 생산비 절감</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn9"></span><span>10 / 17</span></div>
+</div>
+<!-- SLIDE 10: 맞춤영양 배경 (DARK) -->
+<div class="slide dk" id="s10">
+  <div class="sh"><span class="cm">Ⅷ</span><div class="hr"></div><div class="ht"><div class="he">New Project 2027-2031</div><h2 class="hn">맞춤영양 차세대 데이터 기반 구축 — 왜 지금인가</h2></div></div>
+  <div class="sb">
+    <div class="sg4" style="margin-bottom:16px;">
+      <div class="sc"><div class="sv2">20.3%</div><div class="sl">65세 이상 고령자 비율</div><div style="font-size:11px;color:var(--sg);margin-top:3px;">초고령사회 진입 (2025)</div></div>
+      <div class="sc"><div class="sv2">84%</div><div class="sl">고령자 만성질환 유병률</div><div style="font-size:11px;color:var(--sg);margin-top:3px;">1인당 연 진료비 551만원</div></div>
+      <div class="sc"><div class="sv2">최대 10배</div><div class="sl">개인별 혈당반응 차이</div><div style="font-size:11px;color:var(--sg);margin-top:3px;">동일 식품 섭취 시 (Cell, 2015)</div></div>
+      <div class="sc"><div class="sv2">11.4%</div><div class="sl">글로벌 맞춤영양 CAGR</div><div style="font-size:11px;color:var(--sg);margin-top:3px;">'24 142억$ → '34p 419억$</div></div>
+    </div>
+    <div class="slb">▶ 사업 개요</div>
+    <table class="ov">
+      <tr><td>사업 목적</td><td>맞춤영양 실현을 위한 글로벌 수준의 국가표준 농식품 데이터 다양화·고도화 및 AI 기술 융합 예측기술 개발</td></tr>
+      <tr><td>사업 기간</td><td>'27.4월 ~ '31.12월 (5년)</td></tr>
+      <tr><td>총 예산</td><td><em>508억원</em> / '27년 80억원 (국고 100%)</td></tr>
+      <tr><td>수행 방식</td><td>지정 공모 90% + 자유 공모 10%</td></tr>
+      <tr><td>수행 주체</td><td>산(30%) · 학(30%) · 연(30%) · 기타(10%)</td></tr>
+      <tr><td>분야</td><td>12대 국가전략기술 ⑤첨단바이오 / 국정과제 68-3-4 푸드테크</td></tr>
+    </table>
+    <div class="nt" style="margin-top:10px;"><strong>현행 DRI</strong>는 인구집단 평균값 기반 → 개인별 대사 특성 미반영. 선진국은 이미 디지털트윈 기반 맞춤영양 상용화, DB 활용 제품개발기간 <strong>40% 단축</strong></div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn10"></span><span>11 / 17</span></div>
+</div>
+
+<!-- SLIDE 11: 3대 과제 (LIGHT) -->
+<div class="slide lt" id="s11">
+  <div class="sh"><span class="cm">Ⅷ</span><div class="hr"></div><div class="ht"><div class="he">Three Core Tasks</div><h2 class="hn">맞춤영양 — 3대 추진 과제 및 정량 목표</h2></div></div>
+  <div class="sb">
+    <div class="tc3">
+      <div class="card">
+        <div class="tnum">❶</div>
+        <div class="ttl">K-농식품 데이터·AI 인프라</div>
+        <ul class="bl">
+          <li>조리·가공 단계별 성분 변화 DB (500점)</li>
+          <li>딥러닝 성분 예측 (신뢰도 90%↑)</li>
+          <li>국가표준식품성분표 제12개정판</li>
+          <li>기능성 작물 성분-효능 DB (10종)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="tnum">❷</div>
+        <div class="ttl">한국인 맞춤영양 임상 연구</div>
+        <ul class="bl">
+          <li>식품반응 유형화 임상 (200명)</li>
+          <li>개인 대사반응 예측모델 (정확도 75%↑)</li>
+          <li>3대 타겟 맞춤식품 시제품 3종 이상</li>
+        </ul>
+        <div class="nt" style="margin-top:8px;"><strong>타겟</strong> — 근감소증·혈당대사이상·복합이환</div>
+      </div>
+      <div class="card">
+        <div class="tnum">❸</div>
+        <div class="ttl">맞춤식품 설계·플랫폼화</div>
+        <ul class="bl">
+          <li>통합 AI 예측모델 개발</li>
+          <li>맞춤식품 설계모델 2종</li>
+          <li>기업용 원료 설계엔진 API 2종</li>
+          <li>K-FoodData Central 통합 플랫폼</li>
+        </ul>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px;">
+      <div style="padding:12px 14px;border-radius:9px;background:var(--iv);border:1px solid var(--bc);text-align:center;"><div style="font-family:var(--fs);font-size:22px;font-weight:500;color:var(--tc);">508억</div><div style="font-size:11.5px;color:var(--og);margin-top:4px;">총 예산</div></div>
+      <div style="padding:12px 14px;border-radius:9px;background:var(--iv);border:1px solid var(--bc);text-align:center;"><div style="font-family:var(--fs);font-size:22px;font-weight:500;color:var(--tc);">5년</div><div style="font-size:11.5px;color:var(--og);margin-top:4px;">'27~'31년</div></div>
+      <div style="padding:12px 14px;border-radius:9px;background:var(--iv);border:1px solid var(--bc);text-align:center;"><div style="font-family:var(--fs);font-size:22px;font-weight:500;color:var(--tc);">국고 100%</div><div style="font-size:11.5px;color:var(--og);margin-top:4px;">재원</div></div>
+      <div style="padding:12px 14px;border-radius:9px;background:var(--iv);border:1px solid var(--bc);text-align:center;"><div style="font-family:var(--fs);font-size:22px;font-weight:500;color:var(--tc);">산·학·연</div><div style="font-size:11.5px;color:var(--og);margin-top:4px;">수행 주체</div></div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn11"></span><span>12 / 17</span></div>
+</div>
+<!-- SLIDE 12: K-Science 개요 (DARK) -->
+<div class="slide dk" id="s12">
+  <div class="sh"><span class="cm">Ⅸ</span><div class="hr"></div><div class="ht"><div class="he">K-Science Projects</div><h2 class="hn">신규계획: K-Science 프로젝트 3개 사업</h2></div></div>
+  <div class="sb">
+    <div style="padding:12px 16px;border-radius:9px;background:rgba(201,100,66,.1);border:1px solid rgba(201,100,66,.2);margin-bottom:16px;">
+      <p style="font-size:13px;color:var(--sv);line-height:1.6;">과기부 K-Science 취지 부합 · 농진청 기획 추진 중 — 한국 고유 자산 기반 <em>원천기술·세계 표준 선도</em></p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;">
+      <div style="padding:18px;border-radius:12px;background:var(--ds);border:1px solid #3a3a38;">
+        <div style="font-family:var(--fs);font-size:20px;font-weight:500;color:var(--tc);margin-bottom:8px;">K-Lead</div>
+        <div style="font-size:12.5px;color:var(--sv);line-height:1.55;">한국만이 보유한 고유 자산 기반의 원천기술·표준을 세계에서 선도</div>
+      </div>
+      <div style="padding:18px;border-radius:12px;background:var(--ds);border:1px solid #3a3a38;">
+        <div style="font-family:var(--fs);font-size:20px;font-weight:500;color:var(--tc);margin-bottom:8px;">K-Initiation</div>
+        <div style="font-size:12.5px;color:var(--sv);line-height:1.55;">기존에 없던 새로운 연구 패러다임 제시, 글로벌 표준을 한국이 주도적으로 창출</div>
+      </div>
+      <div style="padding:18px;border-radius:12px;background:var(--ds);border:1px solid #3a3a38;">
+        <div style="font-family:var(--fs);font-size:20px;font-weight:500;color:var(--tc);margin-bottom:8px;">K-Identity</div>
+        <div style="font-size:12.5px;color:var(--sv);line-height:1.55;">다른 나라가 단기간 모방하기 어려운 한국 고유의 역사·문화 자산 기반 기술 구현</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
+      <div style="padding:14px 16px;border-radius:10px;background:rgba(201,100,66,.08);border:1px solid rgba(201,100,66,.2);">
+        <div style="font-size:11px;font-weight:600;color:var(--tc);margin-bottom:6px;">K-Sool 세계화</div>
+        <div style="font-family:var(--fs);font-size:22px;font-weight:500;color:var(--iv);">450억 / 5년</div>
+        <div style="font-size:11.5px;color:var(--sv);margin-top:4px;">저탄소쌀 × 토종발효제 × 고문헌 양조</div>
+      </div>
+      <div style="padding:14px 16px;border-radius:10px;background:rgba(201,100,66,.08);border:1px solid rgba(201,100,66,.2);">
+        <div style="font-size:11px;font-weight:600;color:var(--tc);margin-bottom:6px;">K-Seed Oil 세계화</div>
+        <div style="font-family:var(--fs);font-size:22px;font-weight:500;color:var(--iv);">150억 / 5년</div>
+        <div style="font-size:11.5px;color:var(--sv);margin-top:4px;">참기름·들기름 글로벌 규격화·노블푸드</div>
+      </div>
+      <div style="padding:14px 16px;border-radius:10px;background:rgba(201,100,66,.08);border:1px solid rgba(201,100,66,.2);">
+        <div style="font-size:11px;font-weight:600;color:var(--tc);margin-bottom:6px;">치유음식 산업화</div>
+        <div style="font-family:var(--fs);font-size:22px;font-weight:500;color:var(--iv);">300억 / 4년</div>
+        <div style="font-size:11.5px;color:var(--sv);margin-top:4px;">지역 식재료 × 식치 × 현대 과학</div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn12"></span><span>13 / 17</span></div>
+</div>
+
+<!-- SLIDE 13: K-Sool (LIGHT) -->
+<div class="slide lt" id="s13">
+  <div class="sh"><span class="cm">Ⅸ</span><div class="hr"></div><div class="ht"><div class="he">K-Sool Globalization Project</div><h2 class="hn">K-Sool 세계화 프로젝트</h2></div></div>
+  <div class="sb">
+    <div class="sg3" style="margin-bottom:16px;">
+      <div class="sc"><div class="sv2">450억</div><div class="sl">총 예산 (국비 100%)</div><div class="sd up">'27년 75억 편성</div></div>
+      <div class="sc"><div class="sv2">5년</div><div class="sl">'27.1월 ~ '31.12월</div></div>
+      <div class="sc"><div class="sv2">제품 15종↑</div><div class="sl">최종 목표 (실증 150ha)</div></div>
+    </div>
+    <div class="tc2">
+      <div>
+        <div class="slb">▶ 핵심 개념 및 목표</div>
+        <div style="padding:12px 14px;border-radius:9px;background:var(--iv);border:1px solid var(--bc);margin-bottom:12px;">
+          <p style="font-family:var(--fs);font-size:14px;color:var(--cw);line-height:1.6;">저탄소 재배쌀 × 토종발효제 × 고문헌 양조기술<br>→ <em>K-Sool 통합 체계</em> 구축</p>
+        </div>
+        <div class="slb">▶ 3개 내역사업</div>
+        <ul class="bl">
+          <li>① 양조적합 쌀·저탄소 생산기술 — <em>160억</em></li>
+          <li>② 토종발효제 기술 — <em>110억</em></li>
+          <li>③ 고문헌 기반 정밀양조 — <em>180억</em></li>
+        </ul>
+      </div>
+      <div>
+        <div class="slb">▶ 정량 목표 및 K-Science 부합</div>
+        <table class="ov">
+          <tr><td>양조적합성</td><td>평가 10건</td></tr>
+          <tr><td>실증</td><td>150ha</td></tr>
+          <tr><td>토종발효제</td><td>5종 개발</td></tr>
+          <tr><td>제품</td><td>15종 이상</td></tr>
+        </table>
+        <div class="nt" style="margin-top:10px;">
+          <strong>K-Lead</strong> — 한국 고유 자산 기반 원천기술 선도<br>
+          <strong>K-Identity</strong> — 지역쌀·토종발효제·고문헌의 복합자산
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn13"></span><span>14 / 17</span></div>
+</div>
+
+<!-- SLIDE 14: K-Seed Oil (DARK) -->
+<div class="slide dk" id="s14">
+  <div class="sh"><span class="cm">Ⅸ</span><div class="hr"></div><div class="ht"><div class="he">K-Seed Oil & Healing Food</div><h2 class="hn">K-Seed Oil 세계화 &amp; 치유음식 산업화</h2></div></div>
+  <div class="sb">
+    <div class="tc2">
+      <div>
+        <div class="slb">🌿 K-Seed Oil 글로벌 품질인증</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div class="sc"><div class="sv2">150억</div><div class="sl">총 예산 · 5년</div><div class="sd up">'27년 30억</div></div>
+          <div class="sc"><div class="sv2">3,000만불</div><div class="sl">수출 목표</div></div>
+        </div>
+        <table class="ov" style="margin-bottom:10px;">
+          <tr><td>핵심 개념</td><td>참기름·들기름 기능성 입증 + 글로벌 규격화 + 노블푸드 등록</td></tr>
+          <tr><td>3개 내역</td><td>① 고기능성 원료 안정생산(25억) ② 공정혁신·품질고도화(75억) ③ 글로벌 표준 규격화(50억)</td></tr>
+          <tr><td>보유 강점</td><td>리그난 고함유 참깨(슬기), 오메가-3 고함유 들깨(수연·가연) — 세계 최고 수준</td></tr>
+        </table>
+        <div class="nt"><strong>K-Lead</strong> 세계 최고 기능성 품종 · <strong>K-Initiation</strong> 노블푸드 등록 글로벌 패러다임 전환</div>
+      </div>
+      <div>
+        <div class="slb">🍃 치유음식 과학화 및 산업화</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+          <div class="sc"><div class="sv2">300억</div><div class="sl">총 예산 · 4년</div><div class="sd up">'27년 60억</div></div>
+          <div class="sc"><div class="sv2">실증 9건</div><div class="sl">유형별 산업화</div></div>
+        </div>
+        <table class="ov" style="margin-bottom:10px;">
+          <tr><td>핵심 개념</td><td>지역 식재료 × 전통 식치(食治) × 현대 과학 평가체계 → K-치유음식 브랜드화</td></tr>
+          <tr><td>2개 내역</td><td>① 치유음식 평가체계·브랜드화(150억) ② 산업화 모델·활용기술(150억)</td></tr>
+          <tr><td>산업화 모델</td><td>체험형 / 공공급식형 / 외식·가공형 3유형 실증</td></tr>
+        </table>
+        <div class="nt"><strong>K-Lead</strong> 과학화·표준화·브랜딩 선점 · <strong>K-Identity</strong> 고유 식치 개념·지역 식문화</div>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn14"></span><span>15 / 17</span></div>
+</div>
+<!-- SLIDE 15: 마무리 포트폴리오 (LIGHT) -->
+<div class="slide lt" id="s15">
+  <div class="sh"><span class="cm">Ⅹ</span><div class="hr"></div><div class="ht"><div class="he">Closing Summary</div><h2 class="hn">농진청 푸드테크 R&D 포트폴리오 총괄</h2></div></div>
+  <div class="sb">
+    <table class="dt" style="margin-bottom:14px;">
+      <thead><tr><th>구분</th><th>사업명</th><th>예산</th><th>기간</th><th>핵심 성과 목표</th></tr></thead>
+      <tbody>
+        <tr><td>진행중</td><td>5대 분야 R&D</td><td>205억/'26년</td><td>지속</td><td>식품DB·기능성·발효·부산물·대체단백</td></tr>
+        <tr><td style="color:var(--tc);">신규('27~)</td><td style="color:var(--tc);font-weight:600;">맞춤영양 차세대 인프라</td><td>508억/5년</td><td>'27~'31</td><td>한국인 맞춤영양 AI 플랫폼 구축</td></tr>
+        <tr><td style="color:var(--tc);">신규('27~)</td><td>K-Sool 세계화</td><td>450억/5년</td><td>'27~'31</td><td>제품 15종 · 실증 150ha</td></tr>
+        <tr><td style="color:var(--tc);">신규('27~)</td><td>K-Seed Oil 세계화</td><td>150억/5년</td><td>'27~'31</td><td>수출 3,000만불 달성</td></tr>
+        <tr><td style="color:var(--tc);">신규('27~)</td><td>K-치유음식 산업화</td><td>300억/4년</td><td>'27~'30</td><td>유형별 실증 9건 · 브랜드화</td></tr>
+      </tbody>
+    </table>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;">
+      <div style="text-align:center;padding:10px;border-radius:8px;background:var(--iv);border:1px solid var(--bc);"><div style="font-family:var(--fs);font-size:20px;font-weight:500;color:var(--tc);">205억</div><div style="font-size:11px;color:var(--og);margin-top:3px;">'26년 진행 예산</div></div>
+      <div style="text-align:center;padding:10px;border-radius:8px;background:var(--iv);border:1px solid var(--bc);"><div style="font-family:var(--fs);font-size:20px;font-weight:500;color:var(--tc);">508억</div><div style="font-size:11px;color:var(--og);margin-top:3px;">맞춤영양 신규</div></div>
+      <div style="text-align:center;padding:10px;border-radius:8px;background:var(--iv);border:1px solid var(--bc);"><div style="font-family:var(--fs);font-size:20px;font-weight:500;color:var(--tc);">450억</div><div style="font-size:11px;color:var(--og);margin-top:3px;">K-Sool</div></div>
+      <div style="text-align:center;padding:10px;border-radius:8px;background:var(--iv);border:1px solid var(--bc);"><div style="font-family:var(--fs);font-size:20px;font-weight:500;color:var(--tc);">150억</div><div style="font-size:11px;color:var(--og);margin-top:3px;">K-Seed Oil</div></div>
+      <div style="text-align:center;padding:10px;border-radius:8px;background:var(--iv);border:1px solid var(--bc);"><div style="font-family:var(--fs);font-size:20px;font-weight:500;color:var(--tc);">300억</div><div style="font-size:11px;color:var(--og);margin-top:3px;">치유음식</div></div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn15"></span><span>16 / 17</span></div>
+</div>
+
+<!-- SLIDE 16: 협력 요청 (DARK) -->
+<div class="slide dk" id="s16">
+  <div class="sh"><span class="cm">Ⅹ</span><div class="hr"></div><div class="ht"><div class="he">Cooperation Request</div><h2 class="hn">(사)국가그린바이오과학기술협의회 협력 요청</h2></div></div>
+  <div class="sb" style="justify-content:center;">
+    <div style="display:flex;flex-direction:column;gap:14px;max-width:800px;margin:0 auto;width:100%;">
+      <div style="padding:20px 24px;border-radius:12px;background:var(--ds);border:1px solid #3a3a38;display:flex;align-items:flex-start;gap:16px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--tc);color:var(--iv);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;">①</div>
+        <div><div style="font-family:var(--fs);font-size:15px;font-weight:500;color:var(--iv);margin-bottom:6px;">신규 사업 기획 지원</div><div style="font-size:13px;color:var(--sv);line-height:1.6;">K-Science 3개 사업(K-Sool·K-Seed Oil·치유음식)이 훌륭한 연구로 세상에 나올 수 있도록 기획 단계에서의 전문가 네트워크 연계 및 의견 제시</div></div>
+      </div>
+      <div style="padding:20px 24px;border-radius:12px;background:var(--ds);border:1px solid #3a3a38;display:flex;align-items:flex-start;gap:16px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--tc);color:var(--iv);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;">②</div>
+        <div><div style="font-family:var(--fs);font-size:15px;font-weight:500;color:var(--iv);margin-bottom:6px;">산학연 연계 활성화</div><div style="font-size:13px;color:var(--sv);line-height:1.6;">신규 사업 추진 시 산업체·대학·연구기관의 실질적 참여 확대를 위한 연결 고리 역할</div></div>
+      </div>
+      <div style="padding:20px 24px;border-radius:12px;background:var(--ds);border:1px solid #3a3a38;display:flex;align-items:flex-start;gap:16px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--tc);color:var(--iv);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;">③</div>
+        <div><div style="font-family:var(--fs);font-size:15px;font-weight:500;color:var(--iv);margin-bottom:6px;">정책 지원 및 옹호</div><div style="font-size:13px;color:var(--sv);line-height:1.6;">K-Science 프로젝트 예산 반영 및 제도 개선 과정에서 적극적인 협의회 차원의 지지</div></div>
+      </div>
+      <div style="text-align:center;padding:16px;border-radius:10px;border:1px solid rgba(201,100,66,.3);background:rgba(201,100,66,.08);">
+        <p style="font-family:var(--fs);font-size:15px;color:var(--iv);line-height:1.6;">농촌진흥청은 <em>공백 없는 포트폴리오</em>로 우리나라 푸드테크 R&D가<br>실제로 작동하도록 계속 앞장서겠습니다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sf"><span style="font-weight:500;">농촌진흥청</span><span id="sn16"></span><span>17 / 17</span></div>
+</div>
+
+<!-- Nav buttons -->
+<button class="nb" id="pb" onclick="go(cur-1)">‹</button>
+<button class="nb" id="nb2" onclick="go(cur+1)">›</button>
+
+<script>
+const TOTAL=17;
+let cur=0;
+const slides=document.querySelectorAll('.slide');
+function go(n){
+  if(n<0||n>=TOTAL)return;
+  slides[cur].classList.remove('active');
+  cur=n;
+  slides[cur].classList.add('active');
+  updateNav();
+}
+function updateNav(){
+  const pb=document.getElementById('pb');
+  const nb=document.getElementById('nb2');
+  const dk=slides[cur].classList.contains('dk');
+  [pb,nb].forEach(b=>{
+    b.style.background=dk?'rgba(255,255,255,.1)':'rgba(0,0,0,.1)';
+    b.style.color=dk?'#fff':'#141413';
+  });
+  pb.style.opacity=cur===0?'0.2':'0.6';
+  nb.style.opacity=cur===TOTAL-1?'0.2':'0.6';
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);
+});
+// click anywhere right half = next, left half = prev
+document.getElementById('deck').addEventListener('click',e=>{
+  const nb=document.getElementById('nb2');
+  const pb=document.getElementById('pb');
+  if(e.target===nb||e.target===pb)return;
+  if(e.clientX>window.innerWidth/2)go(cur+1); else go(cur-1);
+});
+updateNav();
+</script>
+</div>
+</body>
+</html>
