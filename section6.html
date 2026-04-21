@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ⅵ. 식용곤충 건기식 소재화 및 대체단백 원료화</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ── Design System: Claude / Anthropic Inspired ─────────────────── */
+        :root {
+            --near-black:    #141413;
+            --terracotta:    #c96442;
+            --coral:         #d97757;
+            --parchment:     #f5f4ed;
+            --ivory:         #faf9f5;
+            --pure-white:    #ffffff;
+            --warm-sand:     #e8e6dc;
+            --dark-surface:  #30302e;
+            --charcoal-warm: #4d4c48;
+            --olive-gray:    #5e5d59;
+            --stone-gray:    #87867f;
+            --warm-silver:   #b0aea5;
+            --border-cream:  #f0eee6;
+            --border-warm:   #e8e6dc;
+            --ring-warm:     #d1cfc5;
+            --muted-green:   #4a6741;
+            --font-serif:    'Noto Serif KR', Georgia, serif;
+            --font-sans:     'Noto Sans KR', Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            background: var(--parchment);
+            font-family: var(--font-sans);
+            color: var(--near-black);
+        }
+
+        .page {
+            width: 1200px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Header ─────────────────────────────────────────────────────── */
+        .header {
+            background: var(--near-black);
+            padding: 36px 56px;
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            flex-shrink: 0;
+        }
+
+        .chap-num {
+            font-family: var(--font-serif);
+            font-size: 68px;
+            font-weight: 500;
+            color: var(--terracotta);
+            line-height: 1;
+            flex-shrink: 0;
+            letter-spacing: -1px;
+        }
+
+        .hdr-rule {
+            width: 1px;
+            height: 72px;
+            background: var(--dark-surface);
+            flex-shrink: 0;
+        }
+
+        .hdr-body { flex: 1; }
+
+        .hdr-eyebrow {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--stone-gray);
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .hdr-title {
+            font-family: var(--font-serif);
+            font-size: 30px;
+            font-weight: 500;
+            color: var(--ivory);
+            line-height: 1.25;
+        }
+
+        .hdr-pill {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 3px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(201, 100, 66, 0.35);
+            background: rgba(201, 100, 66, 0.12);
+            color: var(--coral);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* ── Goal Banner ─────────────────────────────────────────────────── */
+        .goal-banner {
+            background: var(--ivory);
+            border-top: 1px solid var(--dark-surface);
+            border-bottom: 2px solid var(--border-warm);
+            padding: 20px 56px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .goal-badge {
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--terracotta);
+            color: var(--ivory);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .goal-text {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            font-weight: 400;
+            color: var(--charcoal-warm);
+            line-height: 1.65;
+        }
+
+        .goal-text em {
+            font-style: normal;
+            color: var(--terracotta);
+            font-weight: 500;
+        }
+
+        /* ── Two-column Grid ─────────────────────────────────────────────── */
+        .grid {
+            padding: 32px 56px 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            flex: 1;
+        }
+
+        /* ── Section Card ────────────────────────────────────────────────── */
+        .sec-card {
+            background: var(--ivory);
+            border: 1px solid var(--border-cream);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: rgba(0,0,0,0.05) 0px 4px 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sec-hdr {
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--border-warm);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sec-ico {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .ico-insect { background: rgba(201, 100, 66, 0.10); }
+        .ico-plant  { background: rgba(74, 103, 65,  0.10); }
+
+        .sec-title {
+            font-family: var(--font-serif);
+            font-size: 17px;
+            font-weight: 500;
+            color: var(--near-black);
+            line-height: 1.35;
+        }
+
+        /* ── Sub-items ───────────────────────────────────────────────────── */
+        .sub-list {
+            padding: 14px 14px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .sub-item {
+            background: var(--pure-white);
+            border: 1px solid var(--border-cream);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .sub-top {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 10px;
+        }
+
+        .sub-ico { font-size: 17px; flex-shrink: 0; }
+
+        .sub-title {
+            font-family: var(--font-serif);
+            font-size: 14.5px;
+            font-weight: 500;
+            color: var(--near-black);
+            line-height: 1.3;
+        }
+
+        .sub-bullets {
+            list-style: none;
+            padding-left: 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .sub-bullets li {
+            font-size: 13px;
+            color: var(--olive-gray);
+            line-height: 1.55;
+            position: relative;
+        }
+
+        .sub-bullets li::before {
+            content: '–';
+            position: absolute;
+            left: -16px;
+            color: var(--stone-gray);
+        }
+
+        .note {
+            margin-top: 10px;
+            padding: 8px 11px;
+            background: var(--parchment);
+            border-radius: 8px;
+            border-left: 2.5px solid var(--terracotta);
+            font-size: 12px;
+            color: var(--stone-gray);
+            line-height: 1.55;
+        }
+
+        .note strong { color: var(--terracotta); font-weight: 600; }
+
+        .tags { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--warm-sand);
+            color: var(--charcoal-warm);
+        }
+
+        .tag.accent {
+            background: rgba(201, 100, 66, 0.12);
+            color: var(--terracotta);
+        }
+
+        .tag.green {
+            background: rgba(74, 103, 65, 0.10);
+            color: var(--muted-green);
+        }
+
+        /* ── Stat Bar ────────────────────────────────────────────────────── */
+        .stat-bar {
+            background: var(--near-black);
+            border-top: 1px solid var(--dark-surface);
+            padding: 22px 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .stat-rule {
+            width: 1px;
+            height: 38px;
+            background: var(--dark-surface);
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-num {
+            font-family: var(--font-serif);
+            font-size: 26px;
+            font-weight: 500;
+            color: var(--terracotta);
+            line-height: 1.1;
+        }
+
+        .stat-label {
+            font-size: 11.5px;
+            color: var(--warm-silver);
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <!-- ── Header ── -->
+    <header class="header">
+        <div class="chap-num">Ⅵ</div>
+        <div class="hdr-rule"></div>
+        <div class="hdr-body">
+            <div class="hdr-eyebrow">2025 바이오푸드테크팀 · 핵심 추진 과제</div>
+            <h1 class="hdr-title">식용곤충 건기식 소재화 및 대체단백 원료화</h1>
+            <span class="hdr-pill">대체식품 핵심 원료 국내 자급화</span>
+        </div>
+    </header>
+
+    <!-- ── Goal Banner ── -->
+    <div class="goal-banner">
+        <span class="goal-badge">◈ 핵심 목표</span>
+        <p class="goal-text">
+            곤충 및 식물성 단백질 등 <em>대체식품 핵심 원료의 국내 자급 기반</em>을 마련하여
+            수입 의존도를 낮추고 <em>미래 단백질 시장을 선점</em>
+        </p>
+    </div>
+
+    <!-- ── Main Grid ── -->
+    <div class="grid">
+
+        <!-- ── 좌: 식용곤충 ── -->
+        <div class="sec-card">
+            <div class="sec-hdr">
+                <div class="sec-ico ico-insect">🪲</div>
+                <h2 class="sec-title">식용곤충 단백질 활용<br>특수의료용도식품 개발</h2>
+            </div>
+            <div class="sub-list">
+
+                <div class="sub-item">
+                    <div class="sub-top">
+                        <span class="sub-ico">🍱</span>
+                        <span class="sub-title">대체육·고령친화식품 시제품 개발</span>
+                    </div>
+                    <ul class="sub-bullets">
+                        <li>갈색거저리(고소애) 곤충 단백질 원료 활용</li>
+                        <li>소비자 맞춤형 제형화 — 필름 등 다양한 剂型</li>
+                        <li>근개선(근육 건강) 효능 적용</li>
+                    </ul>
+                    <div class="tags">
+                        <span class="tag accent">대체육</span>
+                        <span class="tag accent">고령친화식품</span>
+                        <span class="tag">근개선 효능</span>
+                    </div>
+                </div>
+
+                <div class="sub-item">
+                    <div class="sub-top">
+                        <span class="sub-ico">🤖</span>
+                        <span class="sub-title">IoT·AI 기반 디지털 사육 관리 시스템</span>
+                    </div>
+                    <ul class="sub-bullets">
+                        <li>자동 먹이급이 장치 개발</li>
+                        <li>작업시간 단축 및 노동력 감소</li>
+                        <li>곤충산업 거점단지 대량 생산시설 연계 활용</li>
+                    </ul>
+                    <div class="note">
+                        <strong>* 생산 효율화</strong> — IoT·AI 통합으로 스마트 사육 환경 구현,
+                        거점단지 대량 생산 인프라 연계
+                    </div>
+                </div>
+
+                <div class="sub-item">
+                    <div class="sub-top">
+                        <span class="sub-ico">🌱</span>
+                        <span class="sub-title">안심애(갈색거저리) 신품종 개발</span>
+                    </div>
+                    <ul class="sub-bullets">
+                        <li>출하기간 연장으로 유통 유연성 확보</li>
+                        <li>유충 무게 증가로 수율 향상</li>
+                        <li>안정적 원료 공급 기반 마련</li>
+                    </ul>
+                    <div class="tags">
+                        <span class="tag">품종 개선</span>
+                        <span class="tag">안정 공급</span>
+                        <span class="tag accent">고소애 → 안심애</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ── 우: 식물성 ── -->
+        <div class="sec-card">
+            <div class="sec-hdr">
+                <div class="sec-ico ico-plant">🌿</div>
+                <h2 class="sec-title">식물성 원료·기술의 국산화</h2>
+            </div>
+            <div class="sub-list">
+
+                <div class="sub-item">
+                    <div class="sub-top">
+                        <span class="sub-ico">🏭</span>
+                        <span class="sub-title">국산화 — 원료·추출·성형 기술 자립</span>
+                    </div>
+                    <ul class="sub-bullets">
+                        <li>식물성 단백질용 콩 품종 선발 및 특성 분석</li>
+                        <li>국산 원료–소재–제품 연계 DB 구축 <strong style="color:var(--terracotta)">(40종 목표)</strong></li>
+                        <li>단백질 추출·성형기술 국산화</li>
+                        <li>고단백 원료 생산기술 개발</li>
+                    </ul>
+                    <div class="note">
+                        <strong>* DB 구축 목표</strong> — 국산 원료-소재-제품 연계 데이터베이스 40종
+                        확보로 원료 검색·선발 체계 마련
+                    </div>
+                    <div class="tags">
+                        <span class="tag green">콩 품종 DB</span>
+                        <span class="tag green">추출·성형 기술</span>
+                        <span class="tag">40종 목표</span>
+                    </div>
+                </div>
+
+                <div class="sub-item">
+                    <div class="sub-top">
+                        <span class="sub-ico">⚗️</span>
+                        <span class="sub-title">품질개선 — 발효·하이브리드 기술 접목</span>
+                    </div>
+                    <ul class="sub-bullets">
+                        <li>미생물 발효 + 하이브리드 기술로 식물성 단백질 가공</li>
+                        <li>식감·풍미·영양소 향상</li>
+                        <li>항영양소·알레르기·이취 저감 기술 개발</li>
+                        <li>배양육 세포 지지체 → 식물 식이섬유 대체 적용</li>
+                    </ul>
+                    <div class="note">
+                        <strong>* 하이브리드 기술</strong> — 배양육의 세포 지지체를 식물 식이섬유로
+                        대체하여 <strong>생산비 절감</strong> 효과 기대
+                    </div>
+                    <div class="tags">
+                        <span class="tag accent">미생물 발효</span>
+                        <span class="tag accent">하이브리드</span>
+                        <span class="tag green">배양육 연계</span>
+                        <span class="tag">이취 저감</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ── Stat Bar ── -->
+    <div class="stat-bar">
+        <div class="stat-item">
+            <div class="stat-num">2종</div>
+            <div class="stat-label">식용곤충 원료화<br>고소애 · 안심애</div>
+        </div>
+        <div class="stat-rule"></div>
+        <div class="stat-item">
+            <div class="stat-num">40종</div>
+            <div class="stat-label">국산 식물성 원료<br>DB 구축 목표</div>
+        </div>
+        <div class="stat-rule"></div>
+        <div class="stat-item">
+            <div class="stat-num">IoT · AI</div>
+            <div class="stat-label">스마트 사육 관리<br>자동화 시스템</div>
+        </div>
+        <div class="stat-rule"></div>
+        <div class="stat-item">
+            <div class="stat-num">↓ 수입 의존</div>
+            <div class="stat-label">대체단백 원료<br>국내 자급화 실현</div>
+        </div>
+        <div class="stat-rule"></div>
+        <div class="stat-item">
+            <div class="stat-num">↑ 시장 선점</div>
+            <div class="stat-label">미래 단백질 시장<br>국내 기반 확립</div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
